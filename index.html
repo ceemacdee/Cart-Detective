@@ -261,6 +261,11 @@ footer { border-top: 1px solid var(--line); padding: 22px 5%; text-align: center
         <h3>Recommended fixes</h3>
         <p class="sub">Start at the top. Scores are heuristic, not predictions of sales or conversion rates.</p>
         <div id="issues"></div>
+        <div class="issue">
+  <h3>AI-powered recommendations</h3>
+  <p id="aiStatus">AI recommendations will appear here.</p>
+  <div id="aiReport" class="fix hidden"></div>
+</div>
 
         <div class="actions">
           <button class="secondary" id="copyReport" type="button">Copy report</button>
@@ -467,7 +472,60 @@ async function copyText(value, button) {
   }
 }
 
-$("auditForm").addEventListener("submit", event => {
+async function runAiAudit() {
+  const status = $("aiStatus");
+  const report = $("aiReport");
+
+  status.textContent = "Gemini is investigating your product...";
+  report.classList.add("hidden");
+  report.textContent = "";
+
+  try {
+    const response = await fetch(
+      "https://cart-detective-api.ceemacdee.workers.dev/",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productName: text("product"),
+          price: text("price"),
+          description: text("description"),
+          benefits: text("benefits"),
+          shipping: text("shipping"),
+          returns: text("returns"),
+          reviews: text("reviews"),
+          images: text("images"),
+          targetCustomer: text("audience")
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || data.error) {
+      throw new Error(data.error || "Request failed.");
+    }
+
+    report.textContent = data.audit;
+    report.classList.remove("hidden");
+    status.textContent = "Gemini's recommendations:";
+  } catch (error) {
+    status.textContent =
+      "AI audit failed: " + error.message;
+  }
+}
+
+
+$("auditForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  renderReport(audit());
+  await runAiAudit();
+  $("results").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+});
+
   event.preventDefault();
   renderReport(audit());
   $("results").scrollIntoView({behavior: "smooth", block: "start"});
