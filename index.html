@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -358,8 +357,7 @@
   <main>
     <div class="intro">
       <p>
-        Enter your product details to get a rules-based page score and an AI-powered
-        review. The score is a diagnostic checklist, not a prediction of sales.
+        Enter your product details to get an AI-generated information-quality score and practical product-page recommendations. The score is a diagnostic, not a prediction of sales.
       </p>
     </div>
 
@@ -420,7 +418,7 @@
         <div class="panel">
           <h2>Page quality checklist</h2>
           <p class="muted">
-            Tick the items your product page already has. Your score updates automatically.
+            Use this checklist as a separate self-check. Your main score comes from the AI audit.
           </p>
 
           <div class="checklist" id="checklist">
@@ -482,8 +480,8 @@
           <h2>Product page score</h2>
 
           <div class="score-card">
-            <div class="score-number"><span id="score">0</span>/100</div>
-            <div id="scoreLabel">Complete the checklist to calculate your score.</div>
+            <div class="score-number"><span id="score">—</span>/100</div>
+            <div id="scoreLabel">Run an AI audit to calculate your score.</div>
             <div class="score-track">
               <div class="score-fill" id="scoreFill"></div>
             </div>
@@ -534,571 +532,287 @@
   </footer>
 
   <script>
-    "use strict";
+"use strict";
 
-    const API_URL =
-      "https://cart-detective-api.ceemacdee.workers.dev/";
+const API_URL = "https://cart-detective-api.ceemacdee.workers.dev/";
+const STORAGE_KEY = "cartDetectiveReports";
+const MAX_SAVED_REPORTS = 50;
+const $ = (id) => document.getElementById(id);
 
-    const STORAGE_KEY = "cartDetectiveReports";
-    const MAX_SAVED_REPORTS = 50;
+let currentReport = null;
+let isAuditing = false;
 
-    const $ = (id) => document.getElementById(id);
+function getFormData() {
+  const fields = ["productName", "productUrl", "price", "description", "benefits", "shipping", "returns", "reviews", "images", "audience"];
+  const data = {};
+  for (const field of fields) data[field] = $(field).value.trim();
+  return data;
+}
 
-    let currentReport = null;
-    let isAuditing = false;
+function getChecklistFindings() {
+  return [...document.querySelectorAll("#checklist input[type='checkbox']")].map(box => ({
+    text: box.parentElement.querySelector("span").textContent.trim(),
+    completed: box.checked
+  }));
+}
 
-    function getFormData() {
-      const fields = [
-        "productName",
-        "productUrl",
-        "price",
-        "description",
-        "benefits",
-        "shipping",
-        "returns",
-        "reviews",
-        "images",
-        "audience"
-      ];
-
-      const data = {};
-
-      for (const field of fields) {
-        data[field] = $(field).value.trim();
-      }
-
-      return data;
+function updateChecklistFindings() {
+  const findings = getChecklistFindings();
+  const missing = findings.filter(item => !item.completed);
+  const completed = findings.filter(item => item.completed);
+  $("findings").replaceChildren();
+  const summary = document.createElement("p");
+  summary.className = "muted";
+  summary.textContent = `${completed.length} of ${findings.length} checklist items marked complete. This checklist does not determine the AI score.`;
+  $("findings").appendChild(summary);
+  if (missing.length) {
+    const heading = document.createElement("h3");
+    heading.textContent = "Items to review";
+    $("findings").appendChild(heading);
+    for (const item of missing) {
+      const div = document.createElement("div");
+      div.className = "finding";
+      const strong = document.createElement("strong");
+      strong.textContent = "Needs checking";
+      const text = document.createElement("div");
+      text.textContent = item.text;
+      div.append(strong, text);
+      $("findings").appendChild(div);
     }
-
-    function getChecklistScore() {
-      const boxes = [
-        ...document.querySelectorAll("#checklist input[type='checkbox']")
-      ];
-
-      const total = boxes.reduce(
-        (sum, box) => sum + Number(box.dataset.points || 0),
-        0
-      );
-
-      const earned = boxes.reduce(
-        (sum, box) => sum + (box.checked ? Number(box.dataset.points || 0) : 0),
-        0
-      );
-
-      return total ? Math.round((earned / total) * 100) : 0;
-    }
-
-    function getChecklistFindings() {
-      const boxes = [
-        ...document.querySelectorAll("#checklist input[type='checkbox']")
-      ];
-
-      return boxes.map((box) => ({
-        text: box.parentElement.querySelector("span").textContent.trim(),
-        completed: box.checked
-      }));
-    }
-
-    function updateScore() {
-      const score = getChecklistScore();
-
-      $("score").textContent = score;
-      $("scoreFill").style.width = score + "%";
-
-      if (score >= 80) {
-        $("scoreLabel").textContent = "Strong checklist coverage";
-      } else if (score >= 50) {
-        $("scoreLabel").textContent = "Some important areas need attention";
-      } else {
-        $("scoreLabel").textContent = "Several areas may need improvement";
-      }
-
-      const findings = getChecklistFindings();
-      const missing = findings.filter((item) => !item.completed);
-      const completed = findings.filter((item) => item.completed);
-
-      $("findings").replaceChildren();
-
-      const summary = document.createElement("p");
-      summary.className = "muted";
-      summary.textContent =
-        completed.length + " of " + findings.length +
-        " checklist items completed.";
-
-      $("findings").appendChild(summary);
-
-      if (missing.length) {
-        const heading = document.createElement("h3");
-        heading.textContent = "Items to review";
-        $("findings").appendChild(heading);
-
-        for (const item of missing) {
-          const div = document.createElement("div");
-          div.className = "finding";
-
-          const strong = document.createElement("strong");
-          strong.textContent = "Needs checking";
-
-          const text = document.createElement("div");
-          text.textContent = item.text;
-
-          div.append(strong, text);
-          $("findings").appendChild(div);
-        }
-      } else {
-        const done = document.createElement("div");
-        done.className = "finding";
-        done.textContent = "All checklist items are marked complete.";
-        $("findings").appendChild(done);
-      }
-
-      return score;
-    }
-
-    /*
-      Counts explicit priority labels on recommendation lines.
-      Each line is counted at most once. Summary headings are ignored.
-    */
-    function getPriorityCounts(text) {
-      const counts = { high: 0, medium: 0, low: 0 };
-      const lines = String(text || "").split(/\r?\n/);
-
-      for (const line of lines) {
-        const cleaned = line.trim();
-
-        if (!cleaned) continue;
-
-        // Ignore summary headings and count labels only on individual lines.
-        if (/^priority\s+summary\b/i.test(cleaned)) continue;
-        if (/^(high|medium|low)\s*:\s*\d+\s*$/i.test(cleaned)) continue;
-
-        const hasHigh =
-          /\[(?:HIGH|HIGH PRIORITY)\]/i.test(cleaned) ||
-          /\bHIGH\s+PRIORITY\s*:/i.test(cleaned) ||
-          /\bPRIORITY\s*:\s*HIGH\b/i.test(cleaned) ||
-          /🔴\s*HIGH\b/i.test(cleaned);
-
-        const hasMedium =
-          /\[(?:MEDIUM|MEDIUM PRIORITY)\]/i.test(cleaned) ||
-          /\bMEDIUM\s+PRIORITY\s*:/i.test(cleaned) ||
-          /\bPRIORITY\s*:\s*MEDIUM\b/i.test(cleaned) ||
-          /🟠\s*MEDIUM\b/i.test(cleaned);
-
-        const hasLow =
-          /\[(?:LOW|LOW PRIORITY)\]/i.test(cleaned) ||
-          /\bLOW\s+PRIORITY\s*:/i.test(cleaned) ||
-          /\bPRIORITY\s*:\s*LOW\b/i.test(cleaned) ||
-          /🟢\s*LOW\b/i.test(cleaned);
-
-        if (hasHigh) {
-          counts.high++;
-        } else if (hasMedium) {
-          counts.medium++;
-        } else if (hasLow) {
-          counts.low++;
-        }
-      }
-
-      return counts;
-    }
-
-    function renderPrioritySummary(text) {
-      const counts = getPriorityCounts(text);
-
-      $("prioritySummary").textContent =
-        "PRIORITY SUMMARY\n" +
-        "🔴 High: " + counts.high + "\n" +
-        "🟠 Medium: " + counts.medium + "\n" +
-        "🟢 Low: " + counts.low;
-
-      $("prioritySummary").style.display = "block";
-    }
-
-    function showAiAudit(text) {
-      $("aiResults").classList.remove("hidden");
-      $("aiPlaceholder").classList.add("hidden");
-
-      // Show the priority summary BEFORE the detailed AI audit.
-      renderPrioritySummary(text);
-      $("aiOutput").textContent = text;
-
-      $("copyButton").disabled = false;
-      $("downloadButton").disabled = false;
-      $("saveButton").disabled = false;
-    }
-
-    function setStatus(message, type = "") {
-      $("status").textContent = message;
-      $("status").className = "status" + (type ? " " + type : "");
-    }
-
-    async function requestAiAudit(report) {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 60000);
-
-      try {
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            ...report.product,
-            score: report.score,
-            checklist: report.checklist
-          }),
-          signal: controller.signal
-        });
-
-        const rawText = await response.text();
-
-        let payload;
-
-        try {
-          payload = JSON.parse(rawText);
-        } catch {
-          throw new Error(
-            "The API returned an invalid response. Check your Cloudflare Worker."
-          );
-        }
-
-        if (!response.ok) {
-          const message =
-            payload.error ||
-            payload.message ||
-            "The AI request failed with HTTP " + response.status + ".";
-
-          throw new Error(message);
-        }
-
-        if (payload.error) {
-          throw new Error(payload.error);
-        }
-
-        const audit = payload.audit;
-
-        if (typeof audit !== "string" || !audit.trim()) {
-          throw new Error(
-            "The API response did not contain a usable 'audit' string."
-          );
-        }
-
-        return audit;
-      } catch (error) {
-        if (error.name === "AbortError") {
-          throw new Error("The AI request timed out. Please try again.");
-        }
-
-        if (error instanceof TypeError) {
-          throw new Error(
-            "Could not connect to the API. Check the Worker URL and CORS settings."
-          );
-        }
-
-        throw error;
-      } finally {
-        clearTimeout(timeoutId);
-      }
-    }
-
-    function buildReportText(report) {
-      const product = report.product || {};
-      const audit = report.aiAudit || "No AI audit has been generated.";
-
-      const counts = getPriorityCounts(audit);
-
-      const checklistText = (report.checklist || [])
-        .map((item) =>
-          (item.completed ? "[x] " : "[ ] ") + item.text
-        )
-        .join("\n");
-
-      return [
-        "CART DETECTIVE — PRODUCT PAGE AUDIT",
-        "===================================",
-        "",
-        "Product: " + (product.productName || ""),
-        "URL: " + (product.productUrl || "Not provided"),
-        "Price: " + (product.price || "Not provided"),
-        "Checklist score: " + report.score + "/100",
-        "",
-        "PRIORITY SUMMARY",
-        "🔴 High: " + counts.high,
-        "🟠 Medium: " + counts.medium,
-        "🟢 Low: " + counts.low,
-        "",
-        "AI AUDIT",
-        "--------",
-        audit,
-        "",
-        "CHECKLIST",
-        "---------",
-        checklistText,
-        "",
-        "PRODUCT DETAILS",
-        "---------------",
-        "Description: " + (product.description || "Not provided"),
-        "Benefits: " + (product.benefits || "Not provided"),
-        "Shipping: " + (product.shipping || "Not provided"),
-        "Returns: " + (product.returns || "Not provided"),
-        "Reviews: " + (product.reviews || "Not provided"),
-        "Images: " + (product.images || "Not provided"),
-        "Audience: " + (product.audience || "Not provided")
-      ].join("\n");
-    }
-
-    function getSavedReports() {
-      try {
-        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-        return Array.isArray(saved) ? saved : [];
-      } catch {
-        return [];
-      }
-    }
-
-    function setSavedReports(reports) {
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(reports.slice(0, MAX_SAVED_REPORTS))
-      );
-    }
-
-    function renderSavedReports() {
-      const reports = getSavedReports();
-      const container = $("savedReports");
-
-      container.replaceChildren();
-
-      if (!reports.length) {
-        const message = document.createElement("p");
-        message.className = "muted";
-        message.textContent = "No saved reports yet.";
-        container.appendChild(message);
-        return;
-      }
-
-      for (const report of reports) {
-        const row = document.createElement("div");
-        row.className = "saved-report";
-
-        const info = document.createElement("div");
-        info.className = "saved-report-info";
-
-        const name = document.createElement("strong");
-        name.textContent = report.product?.productName || "Untitled product";
-
-        const date = document.createElement("small");
-        date.textContent =
-          new Date(report.createdAt).toLocaleString() +
-          " · Score " + report.score + "/100";
-
-        info.append(name, date);
-
-        const actions = document.createElement("div");
-        actions.className = "saved-report-actions";
-
-        const openButton = document.createElement("button");
-        openButton.textContent = "Open";
-        openButton.type = "button";
-        openButton.addEventListener("click", () => {
-          loadSavedReport(report.id);
-        });
-
-        const deleteButton = document.createElement("button");
-        deleteButton.textContent = "Delete";
-        deleteButton.type = "button";
-        deleteButton.addEventListener("click", () => {
-          deleteSavedReport(report.id);
-        });
-
-        actions.append(openButton, deleteButton);
-        row.append(info, actions);
-        container.appendChild(row);
-      }
-    }
-
-    function saveCurrentReport() {
-      if (!currentReport || !currentReport.aiAudit) return;
-
-      const reports = getSavedReports();
-
-      const savedReport = {
-        ...currentReport,
-        id: crypto.randomUUID
-          ? crypto.randomUUID()
-          : String(Date.now()) + Math.random().toString(16).slice(2),
-        createdAt: new Date().toISOString()
-      };
-
-      reports.unshift(savedReport);
-      setSavedReports(reports);
-      renderSavedReports();
-
-      setStatus("Report saved in this browser.", "success");
-    }
-
-    function loadSavedReport(id) {
-      const report = getSavedReports().find((item) => item.id === id);
-
-      if (!report) {
-        setStatus("That saved report could not be found.", "error");
-        return;
-      }
-
-      currentReport = report;
-
-      for (const [key, value] of Object.entries(report.product || {})) {
-        const field = $(key);
-        if (field) field.value = value || "";
-      }
-
-      const checklistItems = [
-        ...document.querySelectorAll("#checklist input[type='checkbox']")
-      ];
-
-      (report.checklist || []).forEach((item, index) => {
-        if (checklistItems[index]) {
-          checklistItems[index].checked = Boolean(item.completed);
-        }
-      });
-
-      updateScore();
-      showAiAudit(report.aiAudit || "");
-
-      setStatus("Saved report opened.", "success");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function deleteSavedReport(id) {
-      const updated = getSavedReports().filter((item) => item.id !== id);
-      setSavedReports(updated);
-      renderSavedReports();
-      setStatus("Saved report deleted.", "success");
-    }
-
-    async function copyReport() {
-      if (!currentReport) return;
-
-      try {
-        await navigator.clipboard.writeText(buildReportText(currentReport));
-        setStatus("Report copied to clipboard.", "success");
-      } catch {
-        setStatus(
-          "Copy failed. Your browser may require a secure connection.",
-          "error"
-        );
-      }
-    }
-
-    function downloadReport() {
-      if (!currentReport) return;
-
-      const text = buildReportText(currentReport);
-      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = url;
-
-      const safeName = (currentReport.product?.productName || "product-audit")
-        .replace(/[^a-z0-9-_]+/gi, "-")
-        .replace(/^-+|-+$/g, "")
-        .toLowerCase();
-
-      link.download = (safeName || "product-audit") + ".txt";
-
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-
-      URL.revokeObjectURL(url);
-      setStatus("Report downloaded.", "success");
-    }
-
-    async function runAiAudit(event) {
-      event.preventDefault();
-
-      if (isAuditing) return;
-
-      const product = getFormData();
-
-      if (!product.productName) {
-        setStatus("Please enter a product name.", "error");
-        $("productName").focus();
-        return;
-      }
-
-      isAuditing = true;
-      $("auditButton").disabled = true;
-      $("auditButton").textContent = "Analysing...";
-      $("copyButton").disabled = true;
-      $("downloadButton").disabled = true;
-      $("saveButton").disabled = true;
-
-      setStatus("Analysing your product page. This may take a moment.");
-
-      const report = {
-        product,
-        score: updateScore(),
-        checklist: getChecklistFindings(),
-        aiAudit: "",
-        createdAt: new Date().toISOString()
-      };
-
-      currentReport = report;
-
-      try {
-        const recommendations = await requestAiAudit(report);
-
-        report.aiAudit = recommendations;
-        currentReport = report;
-
-        // Priority summary is rendered first, above the AI output.
-        showAiAudit(recommendations);
-
-        setStatus("Audit completed successfully.", "success");
-      } catch (error) {
-        console.error("Cart Detective audit error:", error);
-
-        setStatus(
-          error.message || "Something went wrong. Please try again.",
-          "error"
-        );
-      } finally {
-        isAuditing = false;
-        $("auditButton").disabled = false;
-        $("auditButton").textContent = "Analyse product page";
-      }
-    }
-
-    $("productForm").addEventListener("submit", runAiAudit);
-
-    document.querySelectorAll("#checklist input").forEach((box) => {
-      box.addEventListener("change", updateScore);
+  } else {
+    const done = document.createElement("div");
+    done.className = "finding";
+    done.textContent = "All checklist items are marked complete.";
+    $("findings").appendChild(done);
+  }
+}
+
+function showScore(score) {
+  const valid = Number.isInteger(score) && score >= 0 && score <= 100;
+  $("score").textContent = valid ? String(score) : "—";
+  $("scoreFill").style.width = (valid ? score : 0) + "%";
+  if (!valid) $("scoreLabel").textContent = "Run an AI audit to calculate your score.";
+  else if (score >= 80) $("scoreLabel").textContent = "Strong information quality";
+  else if (score >= 60) $("scoreLabel").textContent = "Some improvements could make this clearer";
+  else if (score >= 40) $("scoreLabel").textContent = "Several important areas need attention";
+  else $("scoreLabel").textContent = "The supplied information needs substantial improvement";
+}
+
+function getPriorityCounts(report) {
+  const counts = { high: 0, medium: 0, low: 0 };
+  for (const item of (Array.isArray(report?.improvements) ? report.improvements : [])) {
+    const priority = String(item?.priority || "").toLowerCase();
+    if (priority === "high") counts.high++;
+    else if (priority === "medium") counts.medium++;
+    else if (priority === "low") counts.low++;
+  }
+  return counts;
+}
+
+function renderPrioritySummary(report) {
+  const counts = getPriorityCounts(report);
+  $("prioritySummary").textContent = `PRIORITY SUMMARY\n🔴 High: ${counts.high}\n🟠 Medium: ${counts.medium}\n🟢 Low: ${counts.low}`;
+}
+
+function formatAiReport(report) {
+  const strengths = Array.isArray(report.strengths) ? report.strengths : [];
+  const improvements = Array.isArray(report.improvements) ? report.improvements : [];
+  return [
+    "OVERALL ASSESSMENT", report.assessment || "No assessment provided.", "",
+    "STRENGTHS", ...(strengths.length ? strengths.map(x => "• " + x) : ["• No clear strengths confirmed."]), "",
+    "PRIORITY IMPROVEMENTS",
+    ...(improvements.length ? improvements.map((item, i) =>
+      `${i + 1}. [${String(item.priority || "Low").toUpperCase()}] ${item.title}\nReason: ${item.reason}\nSuggested fix: ${item.suggestion}\nEstimated score impact: ${item.pointsDeducted} points`
+    ) : ["No major improvements were identified from the supplied information."]), "",
+    "EXAMPLE REWRITE", report.exampleRewrite || "More product details are needed to create a rewrite.", "",
+    "ACTION TO TAKE TODAY", report.actionToday || "Review the highest-priority recommendation first.", "",
+    "Note: This score evaluates only the information submitted. It does not predict sales or verify the live store."
+  ].join("\n");
+}
+
+function showAiAudit(report, auditText) {
+  $("aiResults").classList.remove("hidden");
+  $("aiPlaceholder").classList.add("hidden");
+  renderPrioritySummary(report);
+  $("aiOutput").textContent = auditText;
+  showScore(report.score);
+  $("copyButton").disabled = false;
+  $("downloadButton").disabled = false;
+  $("saveButton").disabled = false;
+}
+
+function setStatus(message, type = "") {
+  $("status").textContent = message;
+  $("status").className = "status" + (type ? " " + type : "");
+}
+
+async function requestAiAudit(product) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 60000);
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(product),
+      signal: controller.signal
     });
+    const rawText = await response.text();
+    let payload;
+    try { payload = JSON.parse(rawText); }
+    catch { throw new Error("The API returned an invalid response. Check your Cloudflare Worker."); }
+    if (!response.ok || payload.error) throw new Error(payload.error || payload.message || `AI request failed (HTTP ${response.status}).`);
 
-    $("copyButton").addEventListener("click", copyReport);
-    $("downloadButton").addEventListener("click", downloadReport);
-    $("saveButton").addEventListener("click", saveCurrentReport);
+    if (payload.report && Number.isInteger(payload.report.score)) {
+      return { report: payload.report, audit: typeof payload.audit === "string" && payload.audit.trim() ? payload.audit : formatAiReport(payload.report) };
+    }
 
-    $("clearReportsButton").addEventListener("click", () => {
-      const reports = getSavedReports();
+    // Compatibility fallback for an older Worker response.
+    if (typeof payload.audit === "string" && payload.audit.trim()) {
+      const match = payload.audit.match(/AI INFORMATION QUALITY SCORE:\s*(\d{1,3})\/100/i);
+      if (match) return {
+        report: { score: Number(match[1]), assessment: payload.audit, strengths: [], improvements: [], exampleRewrite: "", actionToday: "" },
+        audit: payload.audit
+      };
+    }
+    throw new Error("The API response did not contain a usable AI score and structured report. Make sure the updated Worker is deployed.");
+  } catch (error) {
+    if (error.name === "AbortError") throw new Error("The AI request timed out. Please try again.");
+    if (error instanceof TypeError) throw new Error("Could not connect to the API. Check the Worker URL and CORS settings.");
+    throw error;
+  } finally { clearTimeout(timeoutId); }
+}
 
-      if (!reports.length) {
-        setStatus("There are no saved reports to delete.");
-        return;
-      }
+function buildReportText(report) {
+  const product = report.product || {};
+  const counts = getPriorityCounts(report.aiReport || {});
+  return [
+    "CART DETECTIVE — PRODUCT PAGE AUDIT", "===================================", "",
+    "Product: " + (product.productName || ""),
+    "URL: " + (product.productUrl || "Not provided"),
+    "Price: " + (product.price || "Not provided"),
+    "AI information quality score: " + (Number.isInteger(report.score) ? report.score : "Not available") + "/100", "",
+    "PRIORITY SUMMARY", `🔴 High: ${counts.high}`, `🟠 Medium: ${counts.medium}`, `🟢 Low: ${counts.low}`, "",
+    "AI AUDIT", "--------", report.aiAudit || "No AI audit has been generated.", "",
+    "CHECKLIST SELF-CHECK", "--------------------",
+    (report.checklist || []).map(item => (item.completed ? "[x] " : "[ ] ") + item.text).join("\n"), "",
+    "PRODUCT DETAILS", "---------------",
+    "Description: " + (product.description || "Not provided"),
+    "Benefits: " + (product.benefits || "Not provided"),
+    "Shipping: " + (product.shipping || "Not provided"),
+    "Returns: " + (product.returns || "Not provided"),
+    "Reviews: " + (product.reviews || "Not provided"),
+    "Images: " + (product.images || "Not provided"),
+    "Audience: " + (product.audience || "Not provided")
+  ].join("\n");
+}
 
-      if (!confirm("Delete all saved reports from this browser?")) return;
+function getSavedReports() {
+  try { const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); return Array.isArray(saved) ? saved : []; }
+  catch { return []; }
+}
+function setSavedReports(reports) { localStorage.setItem(STORAGE_KEY, JSON.stringify(reports.slice(0, MAX_SAVED_REPORTS))); }
 
-      localStorage.removeItem(STORAGE_KEY);
-      renderSavedReports();
-      setStatus("All saved reports deleted.", "success");
-    });
+function renderSavedReports() {
+  const reports = getSavedReports();
+  const container = $("savedReports");
+  container.replaceChildren();
+  if (!reports.length) {
+    const message = document.createElement("p"); message.className = "muted"; message.textContent = "No saved reports yet."; container.appendChild(message); return;
+  }
+  for (const report of reports) {
+    const row = document.createElement("div"); row.className = "saved-report";
+    const info = document.createElement("div"); info.className = "saved-report-info";
+    const name = document.createElement("strong"); name.textContent = report.product?.productName || "Untitled product";
+    const date = document.createElement("small"); date.textContent = new Date(report.createdAt).toLocaleString() + " · AI score " + (report.score ?? "—") + "/100";
+    info.append(name, date);
+    const actions = document.createElement("div"); actions.className = "saved-report-actions";
+    const openButton = document.createElement("button"); openButton.textContent = "Open"; openButton.type = "button"; openButton.addEventListener("click", () => loadSavedReport(report.id));
+    const deleteButton = document.createElement("button"); deleteButton.textContent = "Delete"; deleteButton.type = "button"; deleteButton.addEventListener("click", () => deleteSavedReport(report.id));
+    actions.append(openButton, deleteButton); row.append(info, actions); container.appendChild(row);
+  }
+}
 
-    updateScore();
-    renderSavedReports();
-  </script>
+function saveCurrentReport() {
+  if (!currentReport?.aiAudit) return;
+  const reports = getSavedReports();
+  reports.unshift({ ...currentReport, id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2), createdAt: new Date().toISOString() });
+  setSavedReports(reports); renderSavedReports(); setStatus("Report saved in this browser.", "success");
+}
+
+function loadSavedReport(id) {
+  const report = getSavedReports().find(item => item.id === id);
+  if (!report) { setStatus("That saved report could not be found.", "error"); return; }
+  currentReport = report;
+  for (const [key, value] of Object.entries(report.product || {})) { const field = $(key); if (field) field.value = value || ""; }
+  const boxes = [...document.querySelectorAll("#checklist input[type='checkbox']")];
+  (report.checklist || []).forEach((item, index) => { if (boxes[index]) boxes[index].checked = Boolean(item.completed); });
+  updateChecklistFindings();
+  if (report.aiReport) showAiAudit(report.aiReport, report.aiAudit || formatAiReport(report.aiReport));
+  else {
+    $("aiResults").classList.remove("hidden"); $("aiPlaceholder").classList.add("hidden");
+    $("prioritySummary").textContent = "PRIORITY SUMMARY\n🔴 High: 0\n🟠 Medium: 0\n🟢 Low: 0";
+    $("aiOutput").textContent = report.aiAudit || "No AI audit was saved."; showScore(Number.isInteger(report.score) ? report.score : null);
+    $("copyButton").disabled = false; $("downloadButton").disabled = false; $("saveButton").disabled = false;
+  }
+  setStatus("Saved report opened.", "success"); window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function deleteSavedReport(id) { setSavedReports(getSavedReports().filter(item => item.id !== id)); renderSavedReports(); setStatus("Saved report deleted.", "success"); }
+
+async function copyReport() {
+  if (!currentReport) return;
+  try { await navigator.clipboard.writeText(buildReportText(currentReport)); setStatus("Report copied to clipboard.", "success"); }
+  catch { setStatus("Copy failed. Your browser may require a secure connection.", "error"); }
+}
+
+function downloadReport() {
+  if (!currentReport) return;
+  const blob = new Blob([buildReportText(currentReport)], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.href = url;
+  const safeName = (currentReport.product?.productName || "product-audit").replace(/[^a-z0-9-_]+/gi, "-").replace(/^-+|-+$/g, "").toLowerCase();
+  link.download = (safeName || "product-audit") + ".txt"; document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url); setStatus("Report downloaded.", "success");
+}
+
+async function runAiAudit(event) {
+  event.preventDefault();
+  if (isAuditing) return;
+  const product = getFormData();
+  if (!product.productName) { setStatus("Please enter a product name.", "error"); $("productName").focus(); return; }
+
+  isAuditing = true; $("auditButton").disabled = true; $("auditButton").textContent = "Analysing...";
+  $("copyButton").disabled = true; $("downloadButton").disabled = true; $("saveButton").disabled = true;
+  $("aiResults").classList.add("hidden"); $("aiPlaceholder").classList.remove("hidden"); showScore(null);
+  setStatus("Analysing your product information with AI. This may take a moment.");
+  const report = { product, score: null, checklist: getChecklistFindings(), aiAudit: "", aiReport: null, createdAt: new Date().toISOString() };
+
+  try {
+    const result = await requestAiAudit(product);
+    report.score = result.report.score; report.aiReport = result.report; report.aiAudit = result.audit; currentReport = report;
+    showAiAudit(result.report, result.audit); setStatus("AI audit completed successfully.", "success");
+  } catch (error) {
+    console.error("Cart Detective audit error:", error);
+    setStatus(error.message || "Something went wrong. Please try again.", "error");
+  } finally {
+    isAuditing = false; $("auditButton").disabled = false; $("auditButton").textContent = "Analyse product page";
+  }
+}
+
+$("productForm").addEventListener("submit", runAiAudit);
+document.querySelectorAll("#checklist input").forEach(box => box.addEventListener("change", updateChecklistFindings));
+$("copyButton").addEventListener("click", copyReport);
+$("downloadButton").addEventListener("click", downloadReport);
+$("saveButton").addEventListener("click", saveCurrentReport);
+$("clearReportsButton").addEventListener("click", () => {
+  const reports = getSavedReports();
+  if (!reports.length) { setStatus("There are no saved reports to delete."); return; }
+  if (!confirm("Delete all saved reports from this browser?")) return;
+  localStorage.removeItem(STORAGE_KEY); renderSavedReports(); setStatus("All saved reports deleted.", "success");
+});
+
+// No score or loading state is shown until the first audit finishes/starts.
+showScore(null);
+updateChecklistFindings();
+renderSavedReports();
+</script>
 </body>
 </html>
-```
