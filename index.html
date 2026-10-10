@@ -1,11 +1,11 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#111111">
-  <meta name="description" content="Use Cart Detective to review product pages and discover ways to improve your online store.">
+  <meta name="description" content="Review product pages and discover ways to improve your online store.">
   <title>Cart Detective — Product Page Auditor</title>
   <link rel="manifest" href="./manifest.json">
 
@@ -14,116 +14,64 @@
       color-scheme: dark;
       --bg: #101010;
       --panel: #191919;
-      --panel-light: #202020;
       --border: #303030;
       --text: #f5f5f5;
       --muted: #a5a5a5;
       --orange: #ff8a35;
       --orange-hover: #ff9d55;
-      --green: #55d69e;
       --red: #ff7272;
       --radius: 15px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      background:
-        radial-gradient(ellipse at top, #28190f 0, transparent 42%),
-        var(--bg);
+      background: radial-gradient(ellipse at top, #28190f 0, transparent 42%), var(--bg);
       color: var(--text);
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", sans-serif;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       line-height: 1.6;
       min-height: 100vh;
     }
 
-    button, input, textarea, select {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    button:disabled {
-      cursor: not-allowed;
-      opacity: 0.55;
-    }
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: .55; }
 
     .container {
       width: min(1100px, calc(100% - 32px));
-      margin: 0 auto;
+      margin: auto;
       padding: 32px 0 60px;
     }
 
-    header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .logo {
-      font-size: clamp(30px, 5vw, 44px);
-      font-weight: 850;
-      letter-spacing: -1.8px;
-      margin: 0;
-    }
-
-    .logo span {
-      color: var(--orange);
-    }
-
-    .subtitle {
-      color: var(--muted);
-      margin: 7px 0 0;
-    }
+    header { text-align: center; margin-bottom: 30px; }
+    .logo { font-size: clamp(30px, 5vw, 44px); font-weight: 850; letter-spacing: -1.8px; margin: 0; }
+    .logo span { color: var(--orange); }
+    .subtitle { color: var(--muted); margin-top: 7px; }
 
     .layout {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.8fr);
+      grid-template-columns: minmax(0, 1fr) minmax(280px, .8fr);
       gap: 20px;
       align-items: start;
     }
 
     .panel {
-      background: rgba(25, 25, 25, 0.96);
+      background: rgba(25, 25, 25, .96);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 24px;
       min-width: 0;
     }
 
-    .panel h2 {
-      font-size: 20px;
-      margin: 0 0 5px;
-    }
+    .panel h2 { font-size: 20px; margin: 0 0 5px; }
+    .panel-intro { color: var(--muted); font-size: 14px; margin: 0 0 22px; }
+    .field { margin-bottom: 17px; }
 
-    .panel-intro {
-      color: var(--muted);
-      font-size: 14px;
-      margin: 0 0 22px;
-    }
+    label { display: block; font-weight: 650; font-size: 13px; margin-bottom: 7px; }
+    .optional { color: var(--muted); font-weight: 400; }
 
-    .field {
-      margin-bottom: 17px;
-    }
-
-    label {
-      display: block;
-      font-weight: 650;
-      font-size: 13px;
-      margin-bottom: 7px;
-    }
-
-    .optional {
-      color: var(--muted);
-      font-weight: 400;
-    }
-
-    input, textarea, select {
+    input, textarea {
       display: block;
       width: 100%;
       border: 1px solid #3a3a3a;
@@ -132,28 +80,16 @@
       color: var(--text);
       padding: 12px 13px;
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
-    input:focus, textarea:focus, select:focus {
+    input:focus, textarea:focus {
       border-color: var(--orange);
       box-shadow: 0 0 0 3px #ff8a3520;
     }
 
-    textarea {
-      resize: vertical;
-      min-height: 85px;
-    }
-
-    input::placeholder, textarea::placeholder {
-      color: #777;
-    }
-
-    .hint {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 5px;
-    }
+    textarea { resize: vertical; min-height: 85px; }
+    input::placeholder, textarea::placeholder { color: #777; }
+    .hint { color: var(--muted); font-size: 12px; margin-top: 5px; }
 
     .button {
       display: inline-flex;
@@ -163,48 +99,18 @@
       padding: 12px 16px;
       border: 1px solid var(--border);
       border-radius: 9px;
-      background: var(--panel-light);
+      background: #202020;
       color: var(--text);
       font-weight: 700;
-      transition: background 0.2s, transform 0.2s;
     }
 
-    .button:hover:not(:disabled) {
-      background: #303030;
-    }
-
-    .button:active:not(:disabled) {
-      transform: scale(0.99);
-    }
-
-    .button-primary {
-      background: var(--orange);
-      border-color: var(--orange);
-      color: #17100a;
-    }
-
-    .button-primary:hover:not(:disabled) {
-      background: var(--orange-hover);
-    }
-
-    .button-danger {
-      color: var(--red);
-    }
-
-    .button-small {
-      padding: 8px 11px;
-      font-size: 12px;
-    }
-
-    .button-full {
-      width: 100%;
-    }
-
-    .form-actions {
-      display: grid;
-      gap: 10px;
-      margin-top: 24px;
-    }
+    .button:hover:not(:disabled) { background: #303030; }
+    .button-primary { background: var(--orange); border-color: var(--orange); color: #17100a; }
+    .button-primary:hover:not(:disabled) { background: var(--orange-hover); }
+    .button-danger { color: var(--red); }
+    .button-small { padding: 8px 11px; font-size: 12px; }
+    .button-full { width: 100%; }
+    .form-actions { display: grid; gap: 10px; margin-top: 24px; }
 
     .status {
       display: none;
@@ -215,27 +121,10 @@
       overflow-wrap: anywhere;
     }
 
-    .status.visible {
-      display: block;
-    }
-
-    .status.error {
-      background: #3b1919;
-      border: 1px solid #753434;
-      color: #ffb0b0;
-    }
-
-    .status.success {
-      background: #153326;
-      border: 1px solid #286346;
-      color: #a4f1c7;
-    }
-
-    .status.info {
-      background: #302519;
-      border: 1px solid #644325;
-      color: #ffd0a7;
-    }
+    .status.visible { display: block; }
+    .status.error { background: #3b1919; border: 1px solid #753434; color: #ffb0b0; }
+    .status.success { background: #153326; border: 1px solid #286346; color: #a4f1c7; }
+    .status.info { background: #302519; border: 1px solid #644325; color: #ffd0a7; }
 
     .empty-state {
       text-align: center;
@@ -246,441 +135,255 @@
       font-size: 14px;
     }
 
-    .report-heading {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
+    .report-heading { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .report-heading h2 { overflow-wrap: anywhere; }
+    .score { font-size: 36px; font-weight: 850; color: var(--orange); line-height: 1.1; margin: 12px 0 5px; }
+    .score-label { color: var(--muted); font-size: 12px; }
+    .score-track { height: 8px; background: #353535; border-radius: 20px; overflow: hidden; margin: 15px 0 22px; }
+    .score-fill { height: 100%; width: 0; background: var(--orange); border-radius: inherit; transition: width .4s; }
+    .section-title { font-size: 15px; margin: 22px 0 10px; }
+    .issue-list, .saved-list { display: grid; gap: 10px; }
 
-    .report-heading h2 {
-      overflow-wrap: anywhere;
-    }
-
-    .score {
-      font-size: 36px;
-      font-weight: 850;
-      color: var(--orange);
-      line-height: 1.1;
-      margin: 12px 0 5px;
-    }
-
-    .score-label {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .score-track {
-      height: 8px;
-      background: #353535;
-      border-radius: 20px;
-      overflow: hidden;
-      margin: 15px 0 22px;
-    }
-
-    .score-fill {
-      height: 100%;
-      width: 0;
-      background: var(--orange);
-      border-radius: inherit;
-      transition: width 0.4s;
-    }
-
-    .section-title {
-      font-size: 15px;
-      margin: 22px 0 10px;
-    }
-
-    .issue-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .issue {
+    .issue, .saved-item {
       padding: 13px;
       border: 1px solid var(--border);
       border-radius: 10px;
       background: #151515;
     }
 
-    .issue strong {
-      display: block;
-      font-size: 13px;
-      margin-bottom: 4px;
-    }
+    .issue strong { display: block; font-size: 13px; margin-bottom: 4px; }
+    .issue p { color: #c4c4c4; font-size: 13px; margin: 0; overflow-wrap: anywhere; }
+    .priority { display: inline-block; margin-bottom: 6px; font-size: 10px; text-transform: uppercase; letter-spacing: .7px; color: var(--orange); font-weight: 800; }
 
-    .issue p {
-      color: #c4c4c4;
-      font-size: 13px;
-      margin: 0;
-      overflow-wrap: anywhere;
-    }
+    .ai-box { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border); }
+    .ai-box h3 { margin: 0 0 8px; font-size: 17px; }
+    .ai-output { font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; color: #dedede; }
 
-    .priority {
-      display: inline-block;
-      margin-bottom: 6px;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.7px;
-      color: var(--orange);
-      font-weight: 800;
-    }
-
-    .ai-box {
-      margin-top: 24px;
-      padding-top: 18px;
-      border-top: 1px solid var(--border);
-    }
-
-    .ai-box h3 {
-      margin: 0 0 8px;
-      font-size: 17px;
-    }
-
-    .ai-output {
-      font-size: 14px;
+    .priority-summary {
       white-space: pre-wrap;
-      overflow-wrap: anywhere;
-      color: #dedede;
-    }
-
-    .ai-output h4 {
-      margin: 18px 0 5px;
-      color: var(--orange);
-    }
-
-    .ai-output ul {
-      padding-left: 22px;
-    }
-
-    .ai-output li {
-      margin-bottom: 6px;
-    }
-
-    .loading {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--orange);
-      font-size: 13px;
-      margin-top: 14px;
-    }
-
-    .spinner {
-      width: 17px;
-      height: 17px;
-      border: 2px solid #66452f;
-      border-top-color: var(--orange);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      flex-shrink: 0;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .saved-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .saved-item {
-      padding: 13px;
+      margin: 0 0 14px;
+      padding: 12px 14px;
       border: 1px solid var(--border);
       border-radius: 10px;
       background: #151515;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
     }
 
-    .saved-name {
-      font-weight: 750;
-      overflow-wrap: anywhere;
-    }
+    .loading { display: flex; align-items: center; gap: 10px; color: var(--orange); font-size: 13px; margin-top: 14px; }
+    .spinner { width: 17px; height: 17px; border: 2px solid #66452f; border-top-color: var(--orange); border-radius: 50%; animation: spin .8s linear infinite; flex-shrink: 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    .saved-meta {
-      font-size: 12px;
-      color: var(--muted);
-      margin: 3px 0 10px;
-    }
-
-    .saved-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-    }
-
-    .muted {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    footer {
-      text-align: center;
-      color: #777;
-      font-size: 12px;
-      margin-top: 28px;
-    }
+    .saved-name { font-weight: 750; overflow-wrap: anywhere; }
+    .saved-meta { font-size: 12px; color: var(--muted); margin: 3px 0 10px; }
+    .saved-actions { display: flex; flex-wrap: wrap; gap: 7px; }
+    .muted { color: var(--muted); font-size: 13px; }
+    footer { text-align: center; color: #777; font-size: 12px; margin-top: 28px; }
 
     @media (max-width: 760px) {
-      .container {
-        width: min(100% - 20px, 560px);
-        padding-top: 22px;
-      }
-
-      .layout {
-        grid-template-columns: 1fr;
-      }
-
-      .panel {
-        padding: 18px;
-      }
+      .container { width: min(100% - 20px, 560px); padding-top: 22px; }
+      .layout { grid-template-columns: 1fr; }
+      .panel { padding: 18px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-      }
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
     }
   </style>
 </head>
 
 <body>
-  <main class="container">
-    <header>
-      <h1 class="logo">Cart <span>Detective</span></h1>
-      <p class="subtitle">Investigate your product page. Find what could be improved.</p>
-    </header>
+<main class="container">
+  <header>
+    <h1 class="logo">Cart <span>Detective</span></h1>
+    <p class="subtitle">Investigate your product page. Find what could be improved.</p>
+  </header>
 
-    <div class="layout">
-      <section class="panel">
-        <h2>Investigate a product</h2>
-        <p class="panel-intro">
-          Enter your product details to receive a checklist and optional AI recommendations.
-        </p>
+  <div class="layout">
+    <section class="panel">
+      <h2>Investigate a product</h2>
+      <p class="panel-intro">Enter your product details to receive a checklist and optional AI recommendations.</p>
 
-        <form id="auditForm">
-          <div class="field">
-            <label for="productName">Product name *</label>
-            <input id="productName" name="productName" required maxlength="200"
-              placeholder="e.g. Kawaii Strawberry Plush">
-          </div>
-
-          <div class="field">
-            <label for="productUrl">Product page URL <span class="optional">(optional)</span></label>
-            <input id="productUrl" name="productUrl" type="url"
-              placeholder="https://yourstore.com/products/example">
-            <div class="hint">The AI receives this URL as text. It does not automatically browse the page.</div>
-          </div>
-
-          <div class="field">
-            <label for="price">Product price <span class="optional">(optional)</span></label>
-            <input id="price" name="price" maxlength="100" placeholder="e.g. $24.95 AUD">
-          </div>
-
-          <div class="field">
-            <label for="description">Product description <span class="optional">(optional)</span></label>
-            <textarea id="description" name="description" maxlength="5000"
-              placeholder="Describe what the product is and what it does..."></textarea>
-          </div>
-
-          <div class="field">
-            <label for="benefits">Main benefits <span class="optional">(optional)</span></label>
-            <textarea id="benefits" name="benefits" maxlength="3000"
-              placeholder="What makes your product useful or special?"></textarea>
-          </div>
-
-          <div class="field">
-            <label for="shipping">Shipping information <span class="optional">(optional)</span></label>
-            <textarea id="shipping" name="shipping" maxlength="2000"
-              placeholder="Costs, delivery estimates, free shipping threshold..."></textarea>
-          </div>
-
-          <div class="field">
-            <label for="returns">Returns policy <span class="optional">(optional)</span></label>
-            <textarea id="returns" name="returns" maxlength="2000"
-              placeholder="Return window, refund conditions, exchanges..."></textarea>
-          </div>
-
-          <div class="field">
-            <label for="reviews">Customer reviews <span class="optional">(optional)</span></label>
-            <textarea id="reviews" name="reviews" maxlength="3000"
-              placeholder="Do you have reviews, ratings or testimonials?"></textarea>
-          </div>
-
-          <div class="field">
-            <label for="images">Product images <span class="optional">(optional)</span></label>
-            <textarea id="images" name="images" maxlength="2000"
-              placeholder="Describe the images, number of photos, backgrounds, etc."></textarea>
-          </div>
-
-          <div class="field">
-            <label for="audience">Target audience <span class="optional">(optional)</span></label>
-            <input id="audience" name="audience" maxlength="500"
-              placeholder="e.g. People who love cute accessories">
-          </div>
-
-          <div class="form-actions">
-            <button class="button button-primary button-full" id="auditButton" type="submit">
-              Investigate Product
-            </button>
-
-            <button class="button button-full" id="aiButton" type="button" disabled>
-              Get AI Recommendations
-            </button>
-          </div>
-
-          <div id="formStatus" class="status" role="status" aria-live="polite"></div>
-        </form>
-      </section>
-
-      <section class="panel" id="reportPanel" aria-live="polite">
-        <div id="emptyState" class="empty-state">
-          <div style="font-size:32px;margin-bottom:8px">🔎</div>
-          <strong>Your investigation starts here.</strong>
-          <p>Enter a product name and select Investigate Product.</p>
+      <form id="auditForm">
+        <div class="field">
+          <label for="productName">Product name *</label>
+          <input id="productName" name="productName" required maxlength="200" placeholder="e.g. Kawaii Strawberry Plush">
         </div>
 
-        <div id="reportContent" hidden>
-          <div class="report-heading">
-            <div>
-              <h2 id="reportTitle">Product report</h2>
-              <div id="reportDate" class="muted"></div>
-            </div>
-          </div>
-
-          <div class="score" id="reportScore">—</div>
-          <div class="score-label">Checklist score out of 100 — not a sales prediction</div>
-          <div class="score-track">
-            <div class="score-fill" id="scoreFill"></div>
-          </div>
-
-          <h3 class="section-title">Checklist findings</h3>
-          <div id="issueList" class="issue-list"></div>
-
-          <div class="ai-box">
-            <h3>AI recommendations</h3>
-            <p class="muted">Optional suggestions generated by the AI service.</p>
-            <div id="aiOutput" class="ai-output">Run an investigation to begin.</div>
-            <div id="aiLoading" class="loading" hidden>
-              <span class="spinner" aria-hidden="true"></span>
-              <span>Detective is investigating your product…</span>
-            </div>
-            <div id="aiStatus" class="status" role="status" aria-live="polite"></div>
-          </div>
-
-          <div class="form-actions">
-            <button class="button button-primary button-full" id="saveButton" type="button">
-              Save Report
-            </button>
-            <button class="button button-full" id="copyButton" type="button">
-              Copy Report
-            </button>
-            <button class="button button-full" id="downloadButton" type="button">
-              Download Report
-            </button>
-          </div>
+        <div class="field">
+          <label for="productUrl">Product page URL <span class="optional">(optional)</span></label>
+          <input id="productUrl" name="productUrl" type="url" placeholder="https://yourstore.com/products/example">
+          <div class="hint">The AI receives this URL as text. It does not automatically browse the page.</div>
         </div>
-      </section>
-    </div>
 
-    <section class="panel" style="margin-top:20px">
-      <h2>Saved investigations</h2>
-      <p class="panel-intro">Reports are saved in this browser on this device.</p>
-      <div id="savedList" class="saved-list">
-        <div class="empty-state">No saved reports yet.</div>
-      </div>
-      <div style="margin-top:14px">
-        <button class="button button-danger button-small" id="clearSavedButton" type="button">
-          Delete All Saved Reports
-        </button>
-      </div>
-      <div id="savedStatus" class="status" role="status" aria-live="polite"></div>
+        <div class="field">
+          <label for="price">Product price <span class="optional">(optional)</span></label>
+          <input id="price" name="price" maxlength="100" placeholder="e.g. $24.95 AUD">
+        </div>
+
+        <div class="field">
+          <label for="description">Product description <span class="optional">(optional)</span></label>
+          <textarea id="description" name="description" maxlength="5000" placeholder="Describe what the product is and what it does..."></textarea>
+        </div>
+
+        <div class="field">
+          <label for="benefits">Main benefits <span class="optional">(optional)</span></label>
+          <textarea id="benefits" name="benefits" maxlength="3000" placeholder="What makes your product useful or special?"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="shipping">Shipping information <span class="optional">(optional)</span></label>
+          <textarea id="shipping" name="shipping" maxlength="2000" placeholder="Costs, delivery estimates, free shipping threshold..."></textarea>
+        </div>
+
+        <div class="field">
+          <label for="returns">Returns policy <span class="optional">(optional)</span></label>
+          <textarea id="returns" name="returns" maxlength="2000" placeholder="Return window, refund conditions, exchanges..."></textarea>
+        </div>
+
+        <div class="field">
+          <label for="reviews">Customer reviews <span class="optional">(optional)</span></label>
+          <textarea id="reviews" name="reviews" maxlength="3000" placeholder="Do you have reviews, ratings or testimonials?"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="images">Product images <span class="optional">(optional)</span></label>
+          <textarea id="images" name="images" maxlength="2000" placeholder="Describe the images, number of photos, backgrounds, etc."></textarea>
+        </div>
+
+        <div class="field">
+          <label for="audience">Target audience <span class="optional">(optional)</span></label>
+          <input id="audience" name="audience" maxlength="500" placeholder="e.g. People who love cute accessories">
+        </div>
+
+        <div class="form-actions">
+          <button class="button button-primary button-full" id="auditButton" type="submit">Investigate Product</button>
+          <button class="button button-full" id="aiButton" type="button" disabled>Get AI Recommendations</button>
+        </div>
+        <div id="formStatus" class="status" role="status" aria-live="polite"></div>
+      </form>
     </section>
 
-    <footer>
-      Cart Detective provides general product-page feedback. Checklist scores and AI suggestions
-      do not guarantee sales or conversion results.
-    </footer>
-  </main>
+    <section class="panel" id="reportPanel" aria-live="polite">
+      <div id="emptyState" class="empty-state">
+        <div style="font-size:32px;margin-bottom:8px">🔎</div>
+        <strong>Your investigation starts here.</strong>
+        <p>Enter a product name and select Investigate Product.</p>
+      </div>
 
-  <script>
-    "use strict";
+      <div id="reportContent" hidden>
+        <div class="report-heading">
+          <div>
+            <h2 id="reportTitle">Product report</h2>
+            <div id="reportDate" class="muted"></div>
+          </div>
+        </div>
 
-    const AI_ENDPOINT = "https://cart-detective-api.ceemacdee.workers.dev/";
-    const AI_TIMEOUT_MS = 30000;
-    const STORAGE_KEY = "cartDetectiveReports";
-    const MAX_SAVED_REPORTS = 50;
+        <div class="score" id="reportScore">—</div>
+        <div class="score-label">Checklist score out of 100 — not a sales prediction</div>
+        <div class="score-track"><div class="score-fill" id="scoreFill"></div></div>
 
-    const $ = (id) => document.getElementById(id);
+        <h3 class="section-title">Checklist findings</h3>
+        <div id="issueList" class="issue-list"></div>
 
-    const form = $("auditForm");
-    const auditButton = $("auditButton");
-    const aiButton = $("aiButton");
-    const saveButton = $("saveButton");
-    const copyButton = $("copyButton");
-    const downloadButton = $("downloadButton");
-    const formStatus = $("formStatus");
-    const aiStatus = $("aiStatus");
-    const savedStatus = $("savedStatus");
+        <div class="ai-box">
+          <h3>AI recommendations</h3>
+          <p class="muted">Optional suggestions generated by the AI service.</p>
+          <div id="prioritySummary" class="priority-summary" hidden></div>
+          <div id="aiOutput" class="ai-output">Run an investigation to begin.</div>
+          <div id="aiLoading" class="loading" hidden>
+            <span class="spinner" aria-hidden="true"></span>
+            <span>Detective is investigating your product…</span>
+          </div>
+          <div id="aiStatus" class="status" role="status" aria-live="polite"></div>
+        </div>
 
-    let currentReport = null;
-    let auditInProgress = false;
-    let aiInProgress = false;
-    let activeController = null;
+        <div class="form-actions">
+          <button class="button button-primary button-full" id="saveButton" type="button">Save Report</button>
+          <button class="button button-full" id="copyButton" type="button">Copy Report</button>
+          <button class="button button-full" id="downloadButton" type="button">Download Report</button>
+        </div>
+      </div>
+    </section>
+  </div>
 
-    function showStatus(element, message, type = "info") {
-      element.textContent = message;
-      element.className = "status visible " + type;
+  <section class="panel" style="margin-top:20px">
+    <h2>Saved investigations</h2>
+    <p class="panel-intro">Reports are saved in this browser on this device.</p>
+    <div id="savedList" class="saved-list"><div class="empty-state">No saved reports yet.</div></div>
+    <div style="margin-top:14px">
+      <button class="button button-danger button-small" id="clearSavedButton" type="button">Delete All Saved Reports</button>
+    </div>
+    <div id="savedStatus" class="status" role="status" aria-live="polite"></div>
+  </section>
+
+  <footer>
+    Cart Detective provides general product-page feedback. Checklist scores and AI suggestions do not guarantee sales or conversion results.
+  </footer>
+</main>
+
+<script>
+"use strict";
+
+const AI_ENDPOINT = "https://cart-detective-api.ceemacdee.workers.dev/";
+const AI_TIMEOUT_MS = 30000;
+const STORAGE_KEY = "cartDetectiveReports";
+const MAX_SAVED_REPORTS = 50;
+const $ = id => document.getElementById(id);
+
+const form = $("auditForm");
+const auditButton = $("auditButton");
+const aiButton = $("aiButton");
+const saveButton = $("saveButton");
+const copyButton = $("copyButton");
+const downloadButton = $("downloadButton");
+const formStatus = $("formStatus");
+const aiStatus = $("aiStatus");
+const savedStatus = $("savedStatus");
+
+let currentReport = null;
+let auditInProgress = false;
+let aiInProgress = false;
+
+function showStatus(element, message, type = "info") {
+  element.textContent = message;
+  element.className = "status visible " + type;
+}
+
+function clearStatus(element) {
+  element.textContent = "";
+  element.className = "status";
+}
+
+function safeText(value) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function getFormData() {
+  const data = Object.fromEntries(new FormData(form).entries());
+  for (const key of Object.keys(data)) data[key] = safeText(data[key]);
+  return data;
+}
+
+function validateForm(data) {
+  if (!data.productName) throw new Error("Please enter a product name.");
+
+  if (data.productUrl) {
+    let parsed;
+    try {
+      parsed = new URL(data.productUrl);
+    } catch {
+      throw new Error("Please enter a valid product page URL, or leave it blank.");
     }
 
-    function clearStatus(element) {
-      element.textContent = "";
-      element.className = "status";
+    if (!["http:", "https:"].includes(parsed.protocol)) {
+      throw new Error("The product URL must begin with http:// or https://.");
     }
+  }
 
-    function safeText(value) {
-      return typeof value === "string" ? value.trim() : "";
-    }
-
-    function getFormData() {
-      const data = Object.fromEntries(new FormData(form).entries());
-
-      for (const key of Object.keys(data)) {
-        data[key] = safeText(data[key]);
-      }
-
-      return data;
-    }
-
-    function validateForm(data) {
-      if (!data.productName) {
-        throw new Error("Please enter a product name.");
-      }
-
-      if (data.productUrl) {
-        let parsed;
-
-        try {
-          parsed = new URL(data.productUrl);
-        } catch {
-          throw new Error("Please enter a valid product page URL, or leave it blank.");
-        }
-
-        if (!["http:", "https:"].includes(parsed.protocol)) {
-          throw new Error("The product URL must begin with http:// or https://.");
-        }
-      }
-
-      return data;
-    }
-
-    function makeFinding(title, detail, points, priority = "Tip") {
-      return { title, detail, points, priority };
-    }
-
-    // This is a simple information checklist, not a conversion prediction.
+  return data;
+}
 
 function runChecklist(data) {
   let score = 100;
@@ -691,33 +394,20 @@ function runChecklist(data) {
 
     if (!text) {
       score -= points;
-      findings.push({
-        title: "Missing: " + title,
-        detail: advice,
-        points,
-        priority: "Improve"
-      });
+      findings.push({ title: "Missing: " + title, detail: advice, points, priority: "Improve" });
       return;
     }
 
-    // Catch extremely short answers and repeated nonsense.
-    const words = text.toLowerCase()
-      .replace(/https?:\/\/\S+/g, "")
-      .match(/[a-z0-9]+/g) || [];
-
+    const words = text.toLowerCase().replace(/https?:\/\/\S+/g, "").match(/[a-z0-9]+/g) || [];
     const uniqueWords = new Set(words);
-    const looksRepeated = words.length >= 3 &&
-      uniqueWords.size / words.length < 0.4;
+    const looksRepeated = words.length >= 3 && uniqueWords.size / words.length < 0.4;
 
     const genericAnswers = new Set([
-      "john", "test", "testing", "n/a", "na", "none",
-      "nothing", "asdf", "hello", "example", "idk",
-      "no", "yes", "good", "stuff", "product"
+      "john", "test", "testing", "n/a", "na", "none", "nothing",
+      "asdf", "hello", "example", "idk", "no", "yes", "good", "stuff", "product"
     ]);
 
-    const isGeneric = words.length > 0 &&
-      words.every(word => genericAnswers.has(word));
-
+    const isGeneric = words.length > 0 && words.every(word => genericAnswers.has(word));
     let problem = "";
 
     if (text.length < minLength) {
@@ -730,12 +420,7 @@ function runChecklist(data) {
 
     if (problem) {
       score -= points;
-      findings.push({
-        title: "Improve: " + title,
-        detail: problem + " " + advice,
-        points,
-        priority: "Improve"
-      });
+      findings.push({ title: "Improve: " + title, detail: problem + " " + advice, points, priority: "Improve" });
     } else {
       findings.push({
         title: title + " provided",
@@ -746,719 +431,540 @@ function runChecklist(data) {
     }
   }
 
-  checkField(
-    "Product description",
-    data.description,
-    35,
-    18,
+  checkField("Product description", data.description, 35, 18,
     "Explain what the product is, its features and what the customer receives.",
-    text => /[a-z]{3,}/i.test(text) &&
-      /[a-z]{3,}\s+[a-z]{3,}/i.test(text)
-  );
+    text => /[a-z]{3,}/i.test(text) && /[a-z]{3,}\s+[a-z]{3,}/i.test(text));
 
-  checkField(
-    "Product benefits",
-    data.benefits,
-    20,
-    12,
-    "Explain how the product helps the customer or what makes it useful."
-  );
+  checkField("Product benefits", data.benefits, 20, 12,
+    "Explain how the product helps the customer or what makes it useful.");
 
-  checkField(
-    "Price information",
-    data.price,
-    2,
-    8,
-    "Provide the actual price and currency where appropriate.",
-    text => /\d/.test(text)
-  );
+  checkField("Price information", data.price, 2, 8,
+    "Provide the actual price and currency where appropriate.", text => /\d/.test(text));
 
-  checkField(
-    "Shipping information",
-    data.shipping,
-    20,
-    12,
-    "Include delivery estimates, shipping charges or relevant shipping conditions.",
-    text => /\d/.test(text) ||
-      /free|business days|working days|delivery|dispatch|shipping cost/i.test(text)
-  );
+  checkField("Shipping information", data.shipping, 20, 12,
+    "Include delivery estimates, shipping charges or relevant conditions.",
+    text => /\d/.test(text) || /free|business days|working days|delivery|dispatch|shipping cost/i.test(text));
 
-  checkField(
-    "Returns policy",
-    data.returns,
-    20,
-    8,
+  checkField("Returns policy", data.returns, 20, 8,
     "Explain the return window, conditions or refund process.",
-    text => /\d/.test(text) ||
-      /days|weeks|refund|exchange|unused|return window/i.test(text)
-  );
+    text => /\d/.test(text) || /days|weeks|refund|exchange|unused|return window/i.test(text));
 
-  checkField(
-    "Customer reviews",
-    data.reviews,
-    15,
-    10,
-    "If genuine reviews exist, include relevant customer feedback or ratings."
-  );
+  checkField("Customer reviews", data.reviews, 15, 10,
+    "If genuine reviews exist, include relevant customer feedback or ratings.");
 
-  checkField(
-    "Product images",
-    data.images,
-    15,
-    12,
-    "Describe the actual images available, such as product angles, close-ups or scale comparisons."
-  );
+  checkField("Product images", data.images, 15, 12,
+    "Describe the actual images available, such as product angles, close-ups or scale comparisons.");
 
-  checkField(
-    "Target audience",
-    data.audience,
-    12,
-    5,
-    "Describe the type of customer who would find this product useful."
-  );
-
-  // A product name is required, but a URL is optional and does not affect score.
-  if (!String(data.productName || "").trim()) {
-    score -= 15;
-    findings.push({
-      title: "Product name missing",
-      detail: "Provide a clear product name so the report identifies what is being assessed.",
-      points: 15,
-      priority: "Improve"
-    });
-  }
-
-  if (!findings.length) {
-    findings.push({
-      title: "No checklist findings",
-      detail: "Review the actual product page to verify the information.",
-      points: 0,
-      priority: "Check"
-    });
-  }
+  checkField("Target audience", data.audience, 12, 5,
+    "Describe the type of customer who would find this product useful.");
 
   return {
     score: Math.max(0, Math.min(100, score)),
     findings,
-    scoreLabel: "Information quality checklist",
     disclaimer: "This is a basic rules-based checklist, not an AI-verified quality score or a prediction of sales."
   };
 }
 
+function createId() {
+  return typeof crypto !== "undefined" && crypto.randomUUID
+    ? crypto.randomUUID()
+    : Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 12);
+}
 
-    function formatDate(value) {
-      const date = new Date(value);
+function createReport(data) {
+  const checklist = runChecklist(data);
 
-      if (Number.isNaN(date.getTime())) {
-        return "Date unavailable";
-      }
+  return {
+    id: createId(),
+    createdAt: new Date().toISOString(),
+    name: data.productName,
+    data,
+    score: checklist.score,
+    findings: checklist.findings,
+    disclaimer: checklist.disclaimer,
+    aiAudit: "",
+    aiState: "not-run"
+  };
+}
 
-      return date.toLocaleString();
+function formatDate(value) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "Date unavailable" : date.toLocaleString();
+}
+
+/*
+  Counts explicit priority labels in the AI text.
+  For best results, recommendations should label each item HIGH, MEDIUM or LOW.
+*/
+function getPriorityCounts(text) {
+  const counts = { high: 0, medium: 0, low: 0 };
+  const lines = String(text || "").split(/\r?\n/);
+
+  for (const line of lines) {
+    const isRecommendation =
+      /^\s*(?:[-*•]\s+|\d+[.)]\s+)?(?:\*\*)?(?:HIGH|MEDIUM|LOW)(?:\s+PRIORITY)?(?:\*\*)?\s*[:—-]/i.test(line) ||
+      /^\s*(?:[-*•]\s+|\d+[.)]\s+)?(?:\*\*)?Priority(?:\*\*)?\s*:\s*(?:HIGH|MEDIUM|LOW)\b/i.test(line);
+
+    if (!isRecommendation) continue;
+
+    if (/\bHIGH(?:\s+PRIORITY)?\b/i.test(line) || /\bPriority\s*:\s*HIGH\b/i.test(line)) {
+      counts.high++;
+    } else if (/\bMEDIUM(?:\s+PRIORITY)?\b/i.test(line) || /\bPriority\s*:\s*MEDIUM\b/i.test(line)) {
+      counts.medium++;
+    } else if (/\bLOW(?:\s+PRIORITY)?\b/i.test(line) || /\bPriority\s*:\s*LOW\b/i.test(line)) {
+      counts.low++;
     }
+  }
 
-    function createReport(data) {
-      const checklist = runChecklist(data);
+  return counts;
+}
 
-      return {
-        id: createId(),
-        createdAt: new Date().toISOString(),
-        name: data.productName,
-        data,
-        score: checklist.score,
-        findings: checklist.findings,
-        scoreLabel: checklist.scoreLabel,
-        disclaimer: checklist.disclaimer,
-        aiAudit: "",
-        aiState: "not-run"
-      };
-    }
+function renderPrioritySummary(report) {
+  const summary = $("prioritySummary");
 
-    function createId() {
-      if (typeof crypto !== "undefined" && crypto.randomUUID) {
-        return crypto.randomUUID();
-      }
+  if (!report.aiAudit) {
+    summary.hidden = true;
+    summary.textContent = "";
+    return;
+  }
 
-      return Date.now().toString(36) + "-" +
-        Math.random().toString(36).slice(2, 12);
-    }
+  const counts = getPriorityCounts(report.aiAudit);
+  summary.textContent =
+    "PRIORITY SUMMARY\n" +
+    "🔴 High: " + counts.high + "\n" +
+    "🟠 Medium: " + counts.medium + "\n" +
+    "🟢 Low: " + counts.low;
+  summary.hidden = false;
+}
 
-    function setBusy(isBusy) {
-      auditInProgress = isBusy;
+function renderReport(report) {
+  currentReport = report;
+  $("emptyState").hidden = true;
+  $("reportContent").hidden = false;
+  $("reportTitle").textContent = report.name || "Product report";
+  $("reportDate").textContent = "Created " + formatDate(report.createdAt);
 
-      auditButton.disabled = isBusy;
-      auditButton.textContent = isBusy ? "Investigating…" : "Investigate Product";
+  const score = Number.isFinite(report.score) ? Math.max(0, Math.min(100, report.score)) : 0;
+  $("reportScore").textContent = score + "/100";
+  $("scoreFill").style.width = score + "%";
 
-      form.querySelectorAll("input, textarea, select").forEach((field) => {
-        field.disabled = isBusy;
-      });
+  const list = $("issueList");
+  list.replaceChildren();
 
-      aiButton.disabled = isBusy || aiInProgress || !currentReport;
-      saveButton.disabled = isBusy || aiInProgress || !currentReport;
-      copyButton.disabled = isBusy || aiInProgress || !currentReport;
-      downloadButton.disabled = isBusy || aiInProgress || !currentReport;
-    }
+  (Array.isArray(report.findings) ? report.findings : []).forEach(finding => {
+    const article = document.createElement("article");
+    article.className = "issue";
 
-    function setAiBusy(isBusy) {
-      aiInProgress = isBusy;
+    const priority = document.createElement("span");
+    priority.className = "priority";
+    priority.textContent = safeText(finding.priority) || "Finding";
 
-      aiButton.disabled = isBusy || auditInProgress || !currentReport;
-      aiButton.textContent = isBusy ? "Investigating…" : "Get AI Recommendations";
+    const title = document.createElement("strong");
+    title.textContent = safeText(finding.title) || "Checklist finding";
 
-      saveButton.disabled = isBusy || auditInProgress || !currentReport;
-      copyButton.disabled = isBusy || auditInProgress || !currentReport;
-      downloadButton.disabled = isBusy || auditInProgress || !currentReport;
+    const detail = document.createElement("p");
+    detail.textContent = safeText(finding.detail);
 
-      $("aiLoading").hidden = !isBusy;
-    }
+    article.append(priority, title, detail);
+    list.appendChild(article);
+  });
 
-    function renderReport(report) {
-      currentReport = report;
+  renderPrioritySummary(report);
+  $("aiOutput").textContent = report.aiAudit ||
+    "No AI recommendations yet. Select Get AI Recommendations to start.";
 
-      $("emptyState").hidden = true;
-      $("reportContent").hidden = false;
+  clearStatus(aiStatus);
+  if (report.aiState === "error") {
+    showStatus(aiStatus, "The previous AI request failed. You can try again.", "error");
+  }
 
-      $("reportTitle").textContent = report.name || "Product report";
-      $("reportDate").textContent = "Created " + formatDate(report.createdAt);
+  setBusy(auditInProgress);
+  setAiBusy(aiInProgress);
+}
 
-      const score = Number.isFinite(report.score)
-        ? Math.max(0, Math.min(100, report.score))
-        : 0;
+function getSavedReports() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    return Array.isArray(parsed) ? parsed.filter(item =>
+      item && typeof item === "object" &&
+      typeof item.name === "string" &&
+      typeof item.createdAt === "string"
+    ) : [];
+  } catch (error) {
+    console.error("Could not read saved reports:", error);
+    return [];
+  }
+}
 
-      $("reportScore").textContent = score + "/100";
-      $("scoreFill").style.width = score + "%";
+function writeSavedReports(reports) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(reports));
+    return true;
+  } catch (error) {
+    console.error("Could not save reports:", error);
+    showStatus(savedStatus, "Could not save reports. Browser storage may be full or disabled.", "error");
+    return false;
+  }
+}
 
-      const list = $("issueList");
-      list.replaceChildren();
+function setBusy(isBusy) {
+  auditInProgress = isBusy;
+  auditButton.disabled = isBusy;
+  auditButton.textContent = isBusy ? "Investigating…" : "Investigate Product";
 
-      const findings = Array.isArray(report.findings) ? report.findings : [];
+  form.querySelectorAll("input, textarea").forEach(field => {
+    field.disabled = isBusy;
+  });
 
-      findings.forEach((finding) => {
-        const article = document.createElement("article");
-        article.className = "issue";
+  aiButton.disabled = isBusy || aiInProgress || !currentReport;
+  saveButton.disabled = isBusy || aiInProgress || !currentReport;
+  copyButton.disabled = isBusy || aiInProgress || !currentReport;
+  downloadButton.disabled = isBusy || aiInProgress || !currentReport;
+}
 
-        const priority = document.createElement("span");
-        priority.className = "priority";
-        priority.textContent = safeText(finding.priority) || "Finding";
+function setAiBusy(isBusy) {
+  aiInProgress = isBusy;
+  aiButton.disabled = isBusy || auditInProgress || !currentReport;
+  aiButton.textContent = isBusy ? "Investigating…" : "Get AI Recommendations";
+  saveButton.disabled = isBusy || auditInProgress || !currentReport;
+  copyButton.disabled = isBusy || auditInProgress || !currentReport;
+  downloadButton.disabled = isBusy || auditInProgress || !currentReport;
+  $("aiLoading").hidden = !isBusy;
+}
 
-        const title = document.createElement("strong");
-        title.textContent = safeText(finding.title) || "Checklist finding";
+function renderSavedReports() {
+  const list = $("savedList");
+  list.replaceChildren();
+  const reports = getSavedReports();
 
-        const detail = document.createElement("p");
-        detail.textContent = safeText(finding.detail);
+  if (!reports.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty-state";
+    empty.textContent = "No saved reports yet.";
+    list.appendChild(empty);
+    return;
+  }
 
-        article.append(priority, title, detail);
-        list.appendChild(article);
-      });
+  reports.forEach(report => {
+    const item = document.createElement("article");
+    item.className = "saved-item";
 
-      $("aiOutput").textContent = report.aiAudit ||
-        "No AI recommendations yet. Select Get AI Recommendations to start.";
+    const name = document.createElement("div");
+    name.className = "saved-name";
+    name.textContent = report.name;
 
-      clearStatus(aiStatus);
+    const meta = document.createElement("div");
+    meta.className = "saved-meta";
+    meta.textContent = formatDate(report.createdAt) + " · Checklist: " +
+      (Number.isFinite(report.score) ? report.score + "/100" : "N/A");
 
-      if (report.aiState === "error") {
-        showStatus(aiStatus,
-          "The previous AI request failed. You can try again.",
-          "error");
-      }
+    const actions = document.createElement("div");
+    actions.className = "saved-actions";
 
-      setBusy(auditInProgress);
-      setAiBusy(aiInProgress);
-    }
+    const openButton = document.createElement("button");
+    openButton.type = "button";
+    openButton.className = "button button-small";
+    openButton.textContent = "Open";
+    openButton.addEventListener("click", () => {
+      if (auditInProgress || aiInProgress) return;
+      fillForm(report.data || {});
+      renderReport(report);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
 
-    function getSavedReports() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-
-        if (!raw) return [];
-
-        const parsed = JSON.parse(raw);
-
-        if (!Array.isArray(parsed)) return [];
-
-        return parsed.filter((item) =>
-          item &&
-          typeof item === "object" &&
-          typeof item.name === "string" &&
-          typeof item.createdAt === "string"
-        );
-      } catch (error) {
-        console.error("Could not read saved reports:", error);
-        return [];
-      }
-    }
-
-    function writeSavedReports(reports) {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(reports));
-        return true;
-      } catch (error) {
-        console.error("Could not save reports:", error);
-        showStatus(
-          savedStatus,
-          "Could not save reports. Your browser storage may be full or disabled.",
-          "error"
-        );
-        return false;
-      }
-    }
-
-    function renderSavedReports() {
-      const list = $("savedList");
-      list.replaceChildren();
-
-      const reports = getSavedReports();
-
-      if (!reports.length) {
-        const empty = document.createElement("div");
-        empty.className = "empty-state";
-        empty.textContent = "No saved reports yet.";
-        list.appendChild(empty);
-        return;
-      }
-
-      reports.forEach((report) => {
-        const item = document.createElement("article");
-        item.className = "saved-item";
-
-        const name = document.createElement("div");
-        name.className = "saved-name";
-        name.textContent = report.name;
-
-        const meta = document.createElement("div");
-        meta.className = "saved-meta";
-        meta.textContent = formatDate(report.createdAt) +
-          " · Checklist: " +
-          (Number.isFinite(report.score) ? report.score + "/100" : "N/A");
-
-        const actions = document.createElement("div");
-        actions.className = "saved-actions";
-
-        const openButton = document.createElement("button");
-        openButton.type = "button";
-        openButton.className = "button button-small";
-        openButton.textContent = "Open";
-        openButton.addEventListener("click", () => {
-          if (auditInProgress || aiInProgress) return;
-
-          fillForm(report.data || {});
-          renderReport(report);
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-
-        const deleteButton = document.createElement("button");
-        deleteButton.type = "button";
-        deleteButton.className = "button button-small button-danger";
-        deleteButton.textContent = "Delete";
-        deleteButton.addEventListener("click", () => {
-          if (auditInProgress || aiInProgress) return;
-
-          const updated = getSavedReports().filter((entry) =>
-            entry.id !== report.id
-          );
-
-          if (writeSavedReports(updated)) {
-            renderSavedReports();
-            showStatus(savedStatus, "Report deleted.", "success");
-          }
-        });
-
-        actions.append(openButton, deleteButton);
-        item.append(name, meta, actions);
-        list.appendChild(item);
-      });
-    }
-
-    function fillForm(data) {
-      for (const field of form.elements) {
-        if (!field.name) continue;
-        field.value = typeof data[field.name] === "string"
-          ? data[field.name]
-          : "";
-      }
-
-      clearStatus(formStatus);
-    }
-
-    function reportAsText(report) {
-      const lines = [
-        "CART DETECTIVE REPORT",
-        "=====================",
-        "Product: " + report.name,
-        "Date: " + formatDate(report.createdAt),
-        "Checklist score: " + report.score + "/100",
-        "",
-        "DISCLAIMER",
-        report.disclaimer || "This checklist is not a sales prediction.",
-        "",
-        "CHECKLIST FINDINGS"
-      ];
-
-      (report.findings || []).forEach((finding) => {
-        lines.push(
-          "",
-          "[" + (finding.priority || "Finding") + "] " + finding.title,
-          finding.detail
-        );
-      });
-
-      lines.push("", "AI RECOMMENDATIONS", report.aiAudit || "Not run.");
-
-      return lines.join("\n");
-    }
-
-    function saveCurrentReport() {
-      if (!currentReport || auditInProgress || aiInProgress) return;
-
-      const reports = getSavedReports();
-      const savedCopy = JSON.parse(JSON.stringify(currentReport));
-
-      // Replace an existing copy of the same report instead of duplicating it.
-      const index = reports.findIndex((item) => item.id === savedCopy.id);
-
-      if (index >= 0) {
-        reports[index] = savedCopy;
-      } else {
-        reports.unshift(savedCopy);
-      }
-
-      if (writeSavedReports(reports.slice(0, MAX_SAVED_REPORTS))) {
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.className = "button button-small button-danger";
+    deleteButton.textContent = "Delete";
+    deleteButton.addEventListener("click", () => {
+      if (auditInProgress || aiInProgress) return;
+      const updated = getSavedReports().filter(entry => entry.id !== report.id);
+      if (writeSavedReports(updated)) {
         renderSavedReports();
-        showStatus(savedStatus, "Report saved in this browser.", "success");
+        showStatus(savedStatus, "Report deleted.", "success");
       }
-    }
+    });
 
-    async function copyCurrentReport() {
-      if (!currentReport || auditInProgress || aiInProgress) return;
+    actions.append(openButton, deleteButton);
+    item.append(name, meta, actions);
+    list.appendChild(item);
+  });
+}
 
-      const text = reportAsText(currentReport);
+function fillForm(data) {
+  for (const field of form.elements) {
+    if (field.name) field.value = typeof data[field.name] === "string" ? data[field.name] : "";
+  }
+  clearStatus(formStatus);
+}
 
-      try {
-        await navigator.clipboard.writeText(text);
-        showStatus(savedStatus, "Report copied to clipboard.", "success");
-      } catch (error) {
-        console.error("Clipboard error:", error);
+function reportAsText(report) {
+  const lines = [
+    "CART DETECTIVE REPORT",
+    "=====================",
+    "Product: " + report.name,
+    "Date: " + formatDate(report.createdAt),
+    "Checklist score: " + report.score + "/100",
+    "",
+    "DISCLAIMER",
+    report.disclaimer || "This checklist is not a sales prediction.",
+    "",
+    "CHECKLIST FINDINGS"
+  ];
 
-        // Fallback for browsers where clipboard permission is unavailable.
-        const area = document.createElement("textarea");
-        area.value = text;
-        area.style.position = "fixed";
-        area.style.opacity = "0";
-        document.body.appendChild(area);
-        area.select();
+  (report.findings || []).forEach(finding => {
+    lines.push("", "[" + (finding.priority || "Finding") + "] " + finding.title, finding.detail);
+  });
 
-        let copied = false;
+  lines.push("", "AI RECOMMENDATIONS", report.aiAudit || "Not run.");
 
-        try {
-          copied = document.execCommand("copy");
-        } catch {
-          copied = false;
-        }
+  if (report.aiAudit) {
+    const counts = getPriorityCounts(report.aiAudit);
+    lines.push(
+      "",
+      "PRIORITY SUMMARY",
+      "High: " + counts.high,
+      "Medium: " + counts.medium,
+      "Low: " + counts.low
+    );
+  }
 
-        area.remove();
+  return lines.join("\n");
+}
 
-        if (copied) {
-          showStatus(savedStatus, "Report copied to clipboard.", "success");
-        } else {
-          showStatus(
-            savedStatus,
-            "Clipboard access was blocked. Use Download Report instead.",
-            "error"
-          );
-        }
-      }
-    }
+function saveCurrentReport() {
+  if (!currentReport || auditInProgress || aiInProgress) return;
 
-    function downloadCurrentReport() {
-      if (!currentReport || auditInProgress || aiInProgress) return;
+  const reports = getSavedReports();
+  const savedCopy = JSON.parse(JSON.stringify(currentReport));
+  const index = reports.findIndex(item => item.id === savedCopy.id);
 
-      const content = reportAsText(currentReport);
-      const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
+  if (index >= 0) reports[index] = savedCopy;
+  else reports.unshift(savedCopy);
 
-      link.href = url;
-      link.download = "cart-detective-" +
-        (currentReport.name || "report")
-          .replace(/[^a-z0-9-_]+/gi, "-")
-          .replace(/^-+|-+$/g, "")
-          .slice(0, 80) +
-        ".txt";
+  if (writeSavedReports(reports.slice(0, MAX_SAVED_REPORTS))) {
+    renderSavedReports();
+    showStatus(savedStatus, "Report saved in this browser.", "success");
+  }
+}
 
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+async function copyCurrentReport() {
+  if (!currentReport || auditInProgress || aiInProgress) return;
+  const text = reportAsText(currentReport);
 
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    }
+  try {
+    await navigator.clipboard.writeText(text);
+    showStatus(savedStatus, "Report copied to clipboard.", "success");
+  } catch (error) {
+    console.error("Clipboard error:", error);
+    const area = document.createElement("textarea");
+    area.value = text;
+    area.style.position = "fixed";
+    area.style.opacity = "0";
+    document.body.appendChild(area);
+    area.select();
 
-    function extractAiText(payload) {
-      if (!payload || typeof payload !== "object") {
-        throw new Error("The AI server returned an invalid response.");
-      }
+    let copied = false;
+    try { copied = document.execCommand("copy"); } catch {}
+    area.remove();
 
-      // Preferred format used by the current frontend.
-      if (typeof payload.audit === "string" && payload.audit.trim()) {
-        return payload.audit.trim();
-      }
+    showStatus(
+      savedStatus,
+      copied ? "Report copied to clipboard." : "Clipboard access was blocked. Use Download Report instead.",
+      copied ? "success" : "error"
+    );
+  }
+}
 
-      // Handle common error response formats.
-      if (payload.error) {
-        const message = typeof payload.error === "string"
-          ? payload.error
-          : payload.error.message;
+function downloadCurrentReport() {
+  if (!currentReport || auditInProgress || aiInProgress) return;
 
-        if (typeof message === "string" && message.trim()) {
-          throw new Error(message.trim());
-        }
-      }
+  const blob = new Blob([reportAsText(currentReport)], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "cart-detective-" +
+    (currentReport.name || "report").replace(/[^a-z0-9-_]+/gi, "-").replace(/^-+|-+$/g, "").slice(0, 80) +
+    ".txt";
 
-      // Handle common alternative Worker response shapes.
-      if (typeof payload.text === "string" && payload.text.trim()) {
-        return payload.text.trim();
-      }
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
 
-      if (typeof payload.result === "string" && payload.result.trim()) {
-        return payload.result.trim();
-      }
+function extractAiText(payload) {
+  if (!payload || typeof payload !== "object") {
+    throw new Error("The AI server returned an invalid response.");
+  }
 
-      if (typeof payload.response === "string" && payload.response.trim()) {
-        return payload.response.trim();
-      }
+  if (payload.error) {
+    const message = typeof payload.error === "string" ? payload.error : payload.error.message;
+    if (typeof message === "string" && message.trim()) throw new Error(message.trim());
+  }
 
-      if (
-        payload.candidates &&
-        Array.isArray(payload.candidates) &&
-        payload.candidates[0]?.content?.parts
-      ) {
-        const text = payload.candidates[0].content.parts
-          .map((part) => typeof part.text === "string" ? part.text : "")
-          .join("\n")
-          .trim();
+  for (const key of ["audit", "text", "result", "response"]) {
+    if (typeof payload[key] === "string" && payload[key].trim()) return payload[key].trim();
+  }
 
-        if (text) return text;
+  if (Array.isArray(payload.candidates) && payload.candidates[0]?.content?.parts) {
+    const text = payload.candidates[0].content.parts
+      .map(part => typeof part.text === "string" ? part.text : "")
+      .join("\n").trim();
+
+    if (text) return text;
+  }
+
+  throw new Error("The AI server responded, but no usable recommendation text was found.");
+}
+
+async function requestAiAudit(report) {
+  const controller = new AbortController();
+  let timedOut = false;
+
+  const timeoutId = setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, AI_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(AI_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        productName: report.data.productName,
+        url: report.data.productUrl,
+        price: report.data.price,
+        description: report.data.description,
+        benefits: report.data.benefits,
+        shipping: report.data.shipping,
+        returns: report.data.returns,
+        reviews: report.data.reviews,
+        images: report.data.images,
+        audience: report.data.audience
+      }),
+      signal: controller.signal
+    });
+
+    const responseText = await response.text();
+    let payload = null;
+
+    try { payload = responseText ? JSON.parse(responseText) : null; } catch {}
+
+    if (!response.ok) {
+      let detail = "";
+
+      if (payload && typeof payload === "object") {
+        if (typeof payload.error === "string") detail = payload.error;
+        else if (payload.error && typeof payload.error.message === "string") detail = payload.error.message;
+        else if (typeof payload.message === "string") detail = payload.message;
       }
 
       throw new Error(
-        "The AI server responded, but no usable recommendation text was found. Check the Worker response format."
+        "AI request failed with HTTP " + response.status + "." +
+        (detail ? " " + detail : " Check the Cloudflare Worker logs and Gemini API configuration.")
       );
     }
 
-    async function requestAiAudit(report) {
-      const controller = new AbortController();
-      activeController = controller;
-
-      let timedOut = false;
-      const timeoutId = setTimeout(() => {
-        timedOut = true;
-        controller.abort();
-      }, AI_TIMEOUT_MS);
-
-      try {
-        const response = await fetch(AI_ENDPOINT, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
-          body: JSON.stringify({
-            productName: report.data.productName,
-            url: report.data.productUrl,
-            price: report.data.price,
-            description: report.data.description,
-            benefits: report.data.benefits,
-            shipping: report.data.shipping,
-            returns: report.data.returns,
-            reviews: report.data.reviews,
-            images: report.data.images,
-            audience: report.data.audience
-          }),
-          signal: controller.signal
-        });
-
-        const responseText = await response.text();
-        let payload = null;
-
-        try {
-          payload = responseText ? JSON.parse(responseText) : null;
-        } catch {
-          payload = null;
-        }
-
-        if (!response.ok) {
-          let detail = "";
-
-          if (payload && typeof payload === "object") {
-            if (typeof payload.error === "string") {
-              detail = payload.error;
-            } else if (payload.error && typeof payload.error.message === "string") {
-              detail = payload.error.message;
-            } else if (typeof payload.message === "string") {
-              detail = payload.message;
-            }
-          }
-
-          if (response.status === 502) {
-            throw new Error(
-              "The AI server returned HTTP 502 (Bad Gateway). The Cloudflare Worker or its Gemini API request is failing. " +
-              (detail ? "Server message: " + detail : "Check the Worker logs and Gemini model/API configuration.")
-            );
-          }
-
-          throw new Error(
-            "AI request failed with HTTP " + response.status + "." +
-            (detail ? " " + detail : " Check the Cloudflare Worker logs.")
-          );
-        }
-
-        if (!payload) {
-          throw new Error(
-            "The AI server returned a response that was not valid JSON."
-          );
-        }
-
-        return extractAiText(payload);
-      } catch (error) {
-        if (timedOut || error.name === "AbortError") {
-          throw new Error(
-            "The AI request took longer than 30 seconds and was stopped. Please try again."
-          );
-        }
-
-        if (error instanceof TypeError) {
-          throw new Error(
-            "Could not connect to the AI server. Check your internet connection and confirm that the Cloudflare Worker allows requests from this website."
-          );
-        }
-
-        throw error;
-      } finally {
-        clearTimeout(timeoutId);
-
-        if (activeController === controller) {
-          activeController = null;
-        }
-      }
+    if (!payload) throw new Error("The AI server returned a response that was not valid JSON.");
+    return extractAiText(payload);
+  } catch (error) {
+    if (timedOut || error.name === "AbortError") {
+      throw new Error("The AI request took longer than 30 seconds and was stopped. Please try again.");
     }
 
-    async function runAiAudit() {
-      if (!currentReport || aiInProgress || auditInProgress) return;
-
-      clearStatus(aiStatus);
-      setAiBusy(true);
-
-      $("aiOutput").textContent = "Waiting for AI recommendations…";
-
-      try {
-        const recommendations = await requestAiAudit(currentReport);
-
-        currentReport.aiAudit = recommendations;
-        currentReport.aiState = "complete";
-
-        
-const priorityCounts = {
-  high: (recommendations.match(/\bHIGH PRIORITY\b/gi) || []).length,
-  medium: (recommendations.match(/\bMEDIUM PRIORITY\b/gi) || []).length,
-  low: (recommendations.match(/\bLOW PRIORITY\b/gi) || []).length
-};
-
-$("aiOutput").textContent =
-  "PRIORITY SUMMARY\n" +
-  "🔴 High: " + priorityCounts.high + "\n" +
-  "🟠 Medium: " + priorityCounts.medium + "\n" +
-  "🟢 Low: " + priorityCounts.low +
-  "\n\n" +
-  "RECOMMENDATIONS\n" +
-  recommendations;
-
-
-        showStatus(
-          aiStatus,
-          "AI recommendations received successfully.",
-          "success"
-        );
-      } catch (error) {
-        console.error("AI audit failed:", error);
-
-        currentReport.aiAudit = "";
-        currentReport.aiState = "error";
-
-        $("aiOutput").textContent =
-          "The AI investigation could not be completed. Your checklist report is still available.";
-
-        showStatus(
-          aiStatus,
-          error.message || "An unexpected error occurred during the AI request.",
-          "error"
-        );
-      } finally {
-        setAiBusy(false);
-      }
+    if (error instanceof TypeError) {
+      throw new Error("Could not connect to the AI server. Check your connection and the Worker CORS settings.");
     }
 
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
 
-      if (auditInProgress || aiInProgress) return;
+async function runAiAudit() {
+  if (!currentReport || aiInProgress || auditInProgress) return;
 
-      clearStatus(formStatus);
-      clearStatus(aiStatus);
+  clearStatus(aiStatus);
+  setAiBusy(true);
+  $("prioritySummary").hidden = true;
+  $("aiOutput").textContent = "Waiting for AI recommendations…";
 
-      try {
-        const data = validateForm(getFormData());
-        const report = createReport(data);
+  try {
+    const recommendations = await requestAiAudit(currentReport);
 
-        renderReport(report);
-        setBusy(false);
+    currentReport.aiAudit = recommendations;
+    currentReport.aiState = "complete";
 
-        showStatus(
-          formStatus,
-          "Checklist complete. You can now request AI recommendations.",
-          "success"
-        );
+    renderPrioritySummary(currentReport);
+    $("aiOutput").textContent = recommendations;
 
-        aiButton.disabled = false;
-        $("reportPanel").scrollIntoView({ behavior: "smooth", block: "start" });
-      } catch (error) {
-        showStatus(formStatus, error.message, "error");
-      }
-    });
+    showStatus(aiStatus, "AI recommendations received successfully.", "success");
+  } catch (error) {
+    console.error("AI audit failed:", error);
+    currentReport.aiAudit = "";
+    currentReport.aiState = "error";
+    renderPrioritySummary(currentReport);
+    $("aiOutput").textContent = "The AI investigation could not be completed. Your checklist report is still available.";
+    showStatus(aiStatus, error.message || "An unexpected error occurred during the AI request.", "error");
+  } finally {
+    setAiBusy(false);
+  }
+}
 
-    aiButton.addEventListener("click", runAiAudit);
-    saveButton.addEventListener("click", saveCurrentReport);
-    copyButton.addEventListener("click", copyCurrentReport);
-    downloadButton.addEventListener("click", downloadCurrentReport);
+form.addEventListener("submit", event => {
+  event.preventDefault();
+  if (auditInProgress || aiInProgress) return;
 
-    $("clearSavedButton").addEventListener("click", () => {
-      if (auditInProgress || aiInProgress) return;
+  clearStatus(formStatus);
+  clearStatus(aiStatus);
 
-      const reports = getSavedReports();
+  try {
+    const data = validateForm(getFormData());
+    renderReport(createReport(data));
+    showStatus(formStatus, "Checklist complete. You can now request AI recommendations.", "success");
+    $("reportPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (error) {
+    showStatus(formStatus, error.message, "error");
+  }
+});
 
-      if (!reports.length) {
-        showStatus(savedStatus, "There are no saved reports to delete.", "info");
-        return;
-      }
+aiButton.addEventListener("click", runAiAudit);
+saveButton.addEventListener("click", saveCurrentReport);
+copyButton.addEventListener("click", copyCurrentReport);
+downloadButton.addEventListener("click", downloadCurrentReport);
 
-      if (!confirm("Delete all saved Cart Detective reports from this browser?")) {
-        return;
-      }
+$("clearSavedButton").addEventListener("click", () => {
+  if (auditInProgress || aiInProgress) return;
 
-      if (writeSavedReports([])) {
-        renderSavedReports();
-        showStatus(savedStatus, "All saved reports deleted.", "success");
-      }
-    });
+  const reports = getSavedReports();
+  if (!reports.length) {
+    showStatus(savedStatus, "There are no saved reports to delete.", "info");
+    return;
+  }
 
-    // Initialise the page.
+  if (!confirm("Delete all saved Cart Detective reports from this browser?")) return;
+
+  if (writeSavedReports([])) {
     renderSavedReports();
+    showStatus(savedStatus, "All saved reports deleted.", "success");
+  }
+});
 
-    // Service worker registration is optional; a missing file must not break the app.
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js").catch((error) => {
-          console.warn("Optional service worker was not registered:", error);
-        });
-      });
-    }
-  </script>
+renderSavedReports();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(error => {
+      console.warn("Optional service worker was not registered:", error);
+    });
+  });
+}
+</script>
 </body>
 </html>
+```
