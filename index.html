@@ -4,967 +4,1101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#111111">
-  <meta name="description" content="Review product pages and discover ways to improve your online store.">
   <title>Cart Detective — Product Page Auditor</title>
-  <link rel="manifest" href="./manifest.json">
 
   <style>
     :root {
-      color-scheme: dark;
-      --bg: #101010;
-      --panel: #191919;
-      --border: #303030;
-      --text: #f5f5f5;
-      --muted: #a5a5a5;
-      --orange: #ff8a35;
-      --orange-hover: #ff9d55;
-      --red: #ff7272;
-      --radius: 15px;
+      --bg: #0d0d0f;
+      --panel: #17171b;
+      --border: #303036;
+      --text: #f5f5f7;
+      --muted: #a5a5af;
+      --orange: #ff8a36;
+      --green: #55d68b;
+      --red: #ff6262;
+      --yellow: #ffc857;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
-      background: radial-gradient(ellipse at top, #28190f 0, transparent 42%), var(--bg);
+      background: var(--bg);
       color: var(--text);
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       line-height: 1.6;
-      min-height: 100vh;
     }
 
-    button, input, textarea { font: inherit; }
-    button { cursor: pointer; }
-    button:disabled { cursor: not-allowed; opacity: .55; }
+    header {
+      padding: 28px 20px;
+      border-bottom: 1px solid var(--border);
+      background: #111113;
+    }
 
-    .container {
-      width: min(1100px, calc(100% - 32px));
+    .header-inner,
+    main {
+      max-width: 1050px;
       margin: auto;
-      padding: 32px 0 60px;
     }
 
-    header { text-align: center; margin-bottom: 30px; }
-    .logo { font-size: clamp(30px, 5vw, 44px); font-weight: 850; letter-spacing: -1.8px; margin: 0; }
-    .logo span { color: var(--orange); }
-    .subtitle { color: var(--muted); margin-top: 7px; }
+    .brand {
+      color: var(--orange);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 6px 0;
+      font-size: clamp(27px, 5vw, 42px);
+      line-height: 1.2;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 21px;
+    }
+
+    h3 {
+      font-size: 16px;
+    }
+
+    p {
+      color: var(--muted);
+    }
+
+    main {
+      padding: 25px 16px 60px;
+    }
+
+    .intro {
+      margin-bottom: 25px;
+    }
 
     .layout {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(280px, .8fr);
-      gap: 20px;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
       align-items: start;
     }
 
     .panel {
-      background: rgba(25, 25, 25, .96);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
       min-width: 0;
-    }
-
-    .panel h2 { font-size: 20px; margin: 0 0 5px; }
-    .panel-intro { color: var(--muted); font-size: 14px; margin: 0 0 22px; }
-    .field { margin-bottom: 17px; }
-
-    label { display: block; font-weight: 650; font-size: 13px; margin-bottom: 7px; }
-    .optional { color: var(--muted); font-weight: 400; }
-
-    input, textarea {
-      display: block;
-      width: 100%;
-      border: 1px solid #3a3a3a;
-      border-radius: 9px;
-      background: #111;
-      color: var(--text);
-      padding: 12px 13px;
-      outline: none;
-    }
-
-    input:focus, textarea:focus {
-      border-color: var(--orange);
-      box-shadow: 0 0 0 3px #ff8a3520;
-    }
-
-    textarea { resize: vertical; min-height: 85px; }
-    input::placeholder, textarea::placeholder { color: #777; }
-    .hint { color: var(--muted); font-size: 12px; margin-top: 5px; }
-
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 16px;
+      padding: 22px;
       border: 1px solid var(--border);
-      border-radius: 9px;
-      background: #202020;
-      color: var(--text);
+      border-radius: 15px;
+      background: var(--panel);
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 6px;
+      font-size: 13px;
       font-weight: 700;
     }
 
-    .button:hover:not(:disabled) { background: #303030; }
-    .button-primary { background: var(--orange); border-color: var(--orange); color: #17100a; }
-    .button-primary:hover:not(:disabled) { background: var(--orange-hover); }
-    .button-danger { color: var(--red); }
-    .button-small { padding: 8px 11px; font-size: 12px; }
-    .button-full { width: 100%; }
-    .form-actions { display: grid; gap: 10px; margin-top: 24px; }
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: #101012;
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+    }
+
+    textarea {
+      min-height: 85px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: 2px solid var(--orange);
+      outline-offset: 1px;
+    }
+
+    button {
+      padding: 11px 15px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: #252529;
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    button:hover {
+      filter: brightness(1.15);
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .primary {
+      background: var(--orange);
+      color: #17100a;
+      border-color: var(--orange);
+    }
+
+    .full {
+      width: 100%;
+      margin-top: 20px;
+      padding: 14px;
+      font-size: 15px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+    }
 
     .status {
-      display: none;
-      padding: 12px 14px;
-      margin-top: 14px;
-      border-radius: 9px;
+      margin-top: 12px;
       font-size: 13px;
       overflow-wrap: anywhere;
     }
 
-    .status.visible { display: block; }
-    .status.error { background: #3b1919; border: 1px solid #753434; color: #ffb0b0; }
-    .status.success { background: #153326; border: 1px solid #286346; color: #a4f1c7; }
-    .status.info { background: #302519; border: 1px solid #644325; color: #ffd0a7; }
-
-    .empty-state {
-      text-align: center;
-      color: var(--muted);
-      padding: 38px 12px;
-      border: 1px dashed #393939;
-      border-radius: 10px;
-      font-size: 14px;
+    .error {
+      color: var(--red);
     }
 
-    .report-heading { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
-    .report-heading h2 { overflow-wrap: anywhere; }
-    .score { font-size: 36px; font-weight: 850; color: var(--orange); line-height: 1.1; margin: 12px 0 5px; }
-    .score-label { color: var(--muted); font-size: 12px; }
-    .score-track { height: 8px; background: #353535; border-radius: 20px; overflow: hidden; margin: 15px 0 22px; }
-    .score-fill { height: 100%; width: 0; background: var(--orange); border-radius: inherit; transition: width .4s; }
-    .section-title { font-size: 15px; margin: 22px 0 10px; }
-    .issue-list, .saved-list { display: grid; gap: 10px; }
+    .success {
+      color: var(--green);
+    }
 
-    .issue, .saved-item {
+    .score-card {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #101012;
+      margin-bottom: 15px;
+    }
+
+    .score-number {
+      color: var(--orange);
+      font-size: 46px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .score-track {
+      height: 8px;
+      background: #333338;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 13px;
+    }
+
+    .score-fill {
+      width: 0;
+      height: 100%;
+      background: var(--orange);
+      transition: width 0.25s;
+    }
+
+    .checklist {
+      display: grid;
+      gap: 9px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 11px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: #111113;
+      font-size: 13px;
+    }
+
+    .check-item input {
+      width: auto;
+      margin-top: 4px;
+      accent-color: var(--orange);
+    }
+
+    .check-item span {
+      flex: 1;
+    }
+
+    .finding {
       padding: 13px;
+      margin-top: 10px;
       border: 1px solid var(--border);
       border-radius: 10px;
-      background: #151515;
+      background: #111113;
     }
 
-    .issue strong { display: block; font-size: 13px; margin-bottom: 4px; }
-    .issue p { color: #c4c4c4; font-size: 13px; margin: 0; overflow-wrap: anywhere; }
-    .priority { display: inline-block; margin-bottom: 6px; font-size: 10px; text-transform: uppercase; letter-spacing: .7px; color: var(--orange); font-weight: 800; }
-
-    .ai-box { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border); }
-    .ai-box h3 { margin: 0 0 8px; font-size: 17px; }
-    .ai-output { font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; color: #dedede; }
+    .finding strong {
+      display: block;
+      margin-bottom: 4px;
+    }
 
     .priority-summary {
       white-space: pre-wrap;
-      margin: 0 0 14px;
-      padding: 12px 14px;
+      overflow-wrap: anywhere;
+      margin: 0 0 16px;
+      padding: 15px;
       border: 1px solid var(--border);
       border-radius: 10px;
-      background: #151515;
+      background: #101012;
       color: var(--text);
       font-size: 14px;
       font-weight: 700;
     }
 
-    .loading { display: flex; align-items: center; gap: 10px; color: var(--orange); font-size: 13px; margin-top: 14px; }
-    .spinner { width: 17px; height: 17px; border: 2px solid #66452f; border-top-color: var(--orange); border-radius: 50%; animation: spin .8s linear infinite; flex-shrink: 0; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .saved-name { font-weight: 750; overflow-wrap: anywhere; }
-    .saved-meta { font-size: 12px; color: var(--muted); margin: 3px 0 10px; }
-    .saved-actions { display: flex; flex-wrap: wrap; gap: 7px; }
-    .muted { color: var(--muted); font-size: 13px; }
-    footer { text-align: center; color: #777; font-size: 12px; margin-top: 28px; }
-
-    @media (max-width: 760px) {
-      .container { width: min(100% - 20px, 560px); padding-top: 22px; }
-      .layout { grid-template-columns: 1fr; }
-      .panel { padding: 18px; }
+    .priority-summary .priority-heading {
+      color: var(--orange);
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    .ai-output {
+      font-size: 14px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      color: #dedee3;
+      line-height: 1.8;
+    }
+
+    .ai-output:empty::before {
+      content: "Your AI audit will appear here.";
+      color: var(--muted);
+    }
+
+    .saved-report {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .saved-report:last-child {
+      border-bottom: none;
+    }
+
+    .saved-report-info {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .saved-report-info strong {
+      display: block;
+    }
+
+    .saved-report-info small {
+      color: var(--muted);
+    }
+
+    .saved-report-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    footer {
+      max-width: 1050px;
+      margin: auto;
+      padding: 0 16px 30px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 760px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        padding: 17px;
+      }
+
+      .saved-report {
+        align-items: flex-start;
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 
 <body>
-<main class="container">
   <header>
-    <h1 class="logo">Cart <span>Detective</span></h1>
-    <p class="subtitle">Investigate your product page. Find what could be improved.</p>
+    <div class="header-inner">
+      <div class="brand">Cart Detective</div>
+      <h1>Find what's hurting your product page.</h1>
+      <p>Audit your product page, uncover potential problems and get actionable improvements.</p>
+    </div>
   </header>
 
-  <div class="layout">
-    <section class="panel">
-      <h2>Investigate a product</h2>
-      <p class="panel-intro">Enter your product details to receive a checklist and optional AI recommendations.</p>
-
-      <form id="auditForm">
-        <div class="field">
-          <label for="productName">Product name *</label>
-          <input id="productName" name="productName" required maxlength="200" placeholder="e.g. Kawaii Strawberry Plush">
-        </div>
-
-        <div class="field">
-          <label for="productUrl">Product page URL <span class="optional">(optional)</span></label>
-          <input id="productUrl" name="productUrl" type="url" placeholder="https://yourstore.com/products/example">
-          <div class="hint">The AI receives this URL as text. It does not automatically browse the page.</div>
-        </div>
-
-        <div class="field">
-          <label for="price">Product price <span class="optional">(optional)</span></label>
-          <input id="price" name="price" maxlength="100" placeholder="e.g. $24.95 AUD">
-        </div>
-
-        <div class="field">
-          <label for="description">Product description <span class="optional">(optional)</span></label>
-          <textarea id="description" name="description" maxlength="5000" placeholder="Describe what the product is and what it does..."></textarea>
-        </div>
-
-        <div class="field">
-          <label for="benefits">Main benefits <span class="optional">(optional)</span></label>
-          <textarea id="benefits" name="benefits" maxlength="3000" placeholder="What makes your product useful or special?"></textarea>
-        </div>
-
-        <div class="field">
-          <label for="shipping">Shipping information <span class="optional">(optional)</span></label>
-          <textarea id="shipping" name="shipping" maxlength="2000" placeholder="Costs, delivery estimates, free shipping threshold..."></textarea>
-        </div>
-
-        <div class="field">
-          <label for="returns">Returns policy <span class="optional">(optional)</span></label>
-          <textarea id="returns" name="returns" maxlength="2000" placeholder="Return window, refund conditions, exchanges..."></textarea>
-        </div>
-
-        <div class="field">
-          <label for="reviews">Customer reviews <span class="optional">(optional)</span></label>
-          <textarea id="reviews" name="reviews" maxlength="3000" placeholder="Do you have reviews, ratings or testimonials?"></textarea>
-        </div>
-
-        <div class="field">
-          <label for="images">Product images <span class="optional">(optional)</span></label>
-          <textarea id="images" name="images" maxlength="2000" placeholder="Describe the images, number of photos, backgrounds, etc."></textarea>
-        </div>
-
-        <div class="field">
-          <label for="audience">Target audience <span class="optional">(optional)</span></label>
-          <input id="audience" name="audience" maxlength="500" placeholder="e.g. People who love cute accessories">
-        </div>
-
-        <div class="form-actions">
-          <button class="button button-primary button-full" id="auditButton" type="submit">Investigate Product</button>
-          <button class="button button-full" id="aiButton" type="button" disabled>Get AI Recommendations</button>
-        </div>
-        <div id="formStatus" class="status" role="status" aria-live="polite"></div>
-      </form>
-    </section>
-
-    <section class="panel" id="reportPanel" aria-live="polite">
-      <div id="emptyState" class="empty-state">
-        <div style="font-size:32px;margin-bottom:8px">🔎</div>
-        <strong>Your investigation starts here.</strong>
-        <p>Enter a product name and select Investigate Product.</p>
-      </div>
-
-      <div id="reportContent" hidden>
-        <div class="report-heading">
-          <div>
-            <h2 id="reportTitle">Product report</h2>
-            <div id="reportDate" class="muted"></div>
-          </div>
-        </div>
-
-        <div class="score" id="reportScore">—</div>
-        <div class="score-label">Checklist score out of 100 — not a sales prediction</div>
-        <div class="score-track"><div class="score-fill" id="scoreFill"></div></div>
-
-        <h3 class="section-title">Checklist findings</h3>
-        <div id="issueList" class="issue-list"></div>
-
-        <div class="ai-box">
-          <h3>AI recommendations</h3>
-          <p class="muted">Optional suggestions generated by the AI service.</p>
-          <div id="prioritySummary" class="priority-summary" hidden></div>
-          <div id="aiOutput" class="ai-output">Run an investigation to begin.</div>
-          <div id="aiLoading" class="loading" hidden>
-            <span class="spinner" aria-hidden="true"></span>
-            <span>Detective is investigating your product…</span>
-          </div>
-          <div id="aiStatus" class="status" role="status" aria-live="polite"></div>
-        </div>
-
-        <div class="form-actions">
-          <button class="button button-primary button-full" id="saveButton" type="button">Save Report</button>
-          <button class="button button-full" id="copyButton" type="button">Copy Report</button>
-          <button class="button button-full" id="downloadButton" type="button">Download Report</button>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <section class="panel" style="margin-top:20px">
-    <h2>Saved investigations</h2>
-    <p class="panel-intro">Reports are saved in this browser on this device.</p>
-    <div id="savedList" class="saved-list"><div class="empty-state">No saved reports yet.</div></div>
-    <div style="margin-top:14px">
-      <button class="button button-danger button-small" id="clearSavedButton" type="button">Delete All Saved Reports</button>
+  <main>
+    <div class="intro">
+      <p>
+        Enter your product details to get a rules-based page score and an AI-powered
+        review. The score is a diagnostic checklist, not a prediction of sales.
+      </p>
     </div>
-    <div id="savedStatus" class="status" role="status" aria-live="polite"></div>
-  </section>
+
+    <div class="layout">
+      <section>
+        <div class="panel">
+          <h2>Product details</h2>
+          <p class="muted">Provide as much detail as you can for a more useful audit.</p>
+
+          <form id="productForm">
+            <label for="productName">Product name *</label>
+            <input id="productName" name="productName" required
+              placeholder="e.g. Smiling Strawberry Plush">
+
+            <label for="productUrl">Product page URL</label>
+            <input id="productUrl" name="productUrl" type="url"
+              placeholder="https://yourstore.com/products/example">
+
+            <label for="price">Price</label>
+            <input id="price" name="price" placeholder="e.g. $19.95 AUD">
+
+            <label for="description">Product description</label>
+            <textarea id="description" name="description"
+              placeholder="Paste your current product description"></textarea>
+
+            <label for="benefits">Main benefits</label>
+            <textarea id="benefits" name="benefits"
+              placeholder="What does the product do? Why would someone want it?"></textarea>
+
+            <label for="shipping">Shipping information</label>
+            <textarea id="shipping" name="shipping"
+              placeholder="Costs, delivery estimates and free-shipping conditions"></textarea>
+
+            <label for="returns">Returns and refunds</label>
+            <textarea id="returns" name="returns"
+              placeholder="Your return policy and refund conditions"></textarea>
+
+            <label for="reviews">Reviews and social proof</label>
+            <textarea id="reviews" name="reviews"
+              placeholder="Review count, customer feedback or testimonials"></textarea>
+
+            <label for="images">Product images</label>
+            <textarea id="images" name="images"
+              placeholder="Describe the images, angles, demonstrations and image quality"></textarea>
+
+            <label for="audience">Target audience</label>
+            <textarea id="audience" name="audience"
+              placeholder="Who is most likely to buy this product?"></textarea>
+
+            <button class="primary full" id="auditButton" type="submit">
+              Analyse product page
+            </button>
+
+            <div id="status" class="status" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+
+        <div class="panel">
+          <h2>Page quality checklist</h2>
+          <p class="muted">
+            Tick the items your product page already has. Your score updates automatically.
+          </p>
+
+          <div class="checklist" id="checklist">
+            <label class="check-item">
+              <input type="checkbox" data-points="10">
+              <span>Clear, specific product title</span>
+            </label>
+
+            <label class="check-item">
+              <input type="checkbox" data-points="10">
+              <span>High-quality product images from useful angles</span>
+            </label>
+
+            <label class="check-item">
+              <input type="checkbox" data-points="10">
+              <span>Clear explanation of product benefits</span>
+            </label>
+
+            <label class="check-item">
+              <input type="checkbox" data-points="10">
+              <span>Price is easy to find and understand</span>
+            </label>
+
+            <label class="check-item">
+              <input type="checkbox" data-points="10">
+              <span>Shipping costs and delivery estimates are clear</span>
+            </label>
+
+            <label class="check-item">
+              <input type="checkbox" data-points="10">
+              <span>Returns and refund information is easy to find</span>
+            </label>
+
+            <label class="check-item">
+              <input type="checkbox" data-points="10">
+              <span>Trust signals, such as genuine customer reviews</span>
+            </label>
+
+            <label class="check-item">
+              <input type="checkbox" data-points="10">
+              <span>Clear call-to-action and buying instructions</span>
+            </label>
+
+            <label class="check-item">
+              <input type="checkbox" data-points="10">
+              <span>Mobile-friendly layout and readable text</span>
+            </label>
+
+            <label class="check-item">
+              <input type="checkbox" data-points="10">
+              <span>No obvious spelling errors or confusing wording</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="panel">
+          <h2>Product page score</h2>
+
+          <div class="score-card">
+            <div class="score-number"><span id="score">0</span>/100</div>
+            <div id="scoreLabel">Complete the checklist to calculate your score.</div>
+            <div class="score-track">
+              <div class="score-fill" id="scoreFill"></div>
+            </div>
+          </div>
+
+          <div id="findings">
+            <p class="muted">Your checklist findings will appear here.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>AI audit</h2>
+          <p class="muted">
+            Your priority summary appears first, followed by the full AI audit.
+          </p>
+
+          <div id="aiResults" class="hidden">
+            <div id="prioritySummary" class="priority-summary"></div>
+            <div id="aiOutput" class="ai-output"></div>
+          </div>
+
+          <div id="aiPlaceholder" class="muted">
+            Fill in your product details and click Analyse product page.
+          </div>
+
+          <div class="button-row">
+            <button id="copyButton" type="button" disabled>Copy report</button>
+            <button id="downloadButton" type="button" disabled>Download report</button>
+            <button id="saveButton" type="button" disabled>Save report</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Saved reports</h2>
+          <p class="muted">Reports are saved in this browser on this device.</p>
+          <div id="savedReports">
+            <p class="muted">No saved reports yet.</p>
+          </div>
+          <button id="clearReportsButton" type="button">Delete all saved reports</button>
+        </div>
+      </section>
+    </div>
+  </main>
 
   <footer>
-    Cart Detective provides general product-page feedback. Checklist scores and AI suggestions do not guarantee sales or conversion results.
+    Cart Detective provides general product-page feedback. It cannot guarantee sales,
+    conversions or business results. Always verify product claims and policies.
   </footer>
-</main>
 
-<script>
-"use strict";
-
-const AI_ENDPOINT = "https://cart-detective-api.ceemacdee.workers.dev/";
-const AI_TIMEOUT_MS = 30000;
-const STORAGE_KEY = "cartDetectiveReports";
-const MAX_SAVED_REPORTS = 50;
-const $ = id => document.getElementById(id);
-
-const form = $("auditForm");
-const auditButton = $("auditButton");
-const aiButton = $("aiButton");
-const saveButton = $("saveButton");
-const copyButton = $("copyButton");
-const downloadButton = $("downloadButton");
-const formStatus = $("formStatus");
-const aiStatus = $("aiStatus");
-const savedStatus = $("savedStatus");
-
-let currentReport = null;
-let auditInProgress = false;
-let aiInProgress = false;
-
-function showStatus(element, message, type = "info") {
-  element.textContent = message;
-  element.className = "status visible " + type;
-}
-
-function clearStatus(element) {
-  element.textContent = "";
-  element.className = "status";
-}
-
-function safeText(value) {
-  return typeof value === "string" ? value.trim() : "";
-}
-
-function getFormData() {
-  const data = Object.fromEntries(new FormData(form).entries());
-  for (const key of Object.keys(data)) data[key] = safeText(data[key]);
-  return data;
-}
-
-function validateForm(data) {
-  if (!data.productName) throw new Error("Please enter a product name.");
-
-  if (data.productUrl) {
-    let parsed;
-    try {
-      parsed = new URL(data.productUrl);
-    } catch {
-      throw new Error("Please enter a valid product page URL, or leave it blank.");
-    }
-
-    if (!["http:", "https:"].includes(parsed.protocol)) {
-      throw new Error("The product URL must begin with http:// or https://.");
-    }
-  }
-
-  return data;
-}
-
-function runChecklist(data) {
-  let score = 100;
-  const findings = [];
-
-  function checkField(title, value, minLength, points, advice, test) {
-    const text = String(value || "").trim();
-
-    if (!text) {
-      score -= points;
-      findings.push({ title: "Missing: " + title, detail: advice, points, priority: "Improve" });
-      return;
-    }
-
-    const words = text.toLowerCase().replace(/https?:\/\/\S+/g, "").match(/[a-z0-9]+/g) || [];
-    const uniqueWords = new Set(words);
-    const looksRepeated = words.length >= 3 && uniqueWords.size / words.length < 0.4;
-
-    const genericAnswers = new Set([
-      "john", "test", "testing", "n/a", "na", "none", "nothing",
-      "asdf", "hello", "example", "idk", "no", "yes", "good", "stuff", "product"
-    ]);
-
-    const isGeneric = words.length > 0 && words.every(word => genericAnswers.has(word));
-    let problem = "";
-
-    if (text.length < minLength) {
-      problem = "This answer is too short to provide enough useful information.";
-    } else if (isGeneric || looksRepeated) {
-      problem = "This answer looks generic or repetitive rather than specific to the product.";
-    } else if (test && !test(text)) {
-      problem = "This answer may be missing important details for this field.";
-    }
-
-    if (problem) {
-      score -= points;
-      findings.push({ title: "Improve: " + title, detail: problem + " " + advice, points, priority: "Improve" });
-    } else {
-      findings.push({
-        title: title + " provided",
-        detail: "The answer contains some useful information. Check that it is accurate and complete.",
-        points: 0,
-        priority: "Check"
-      });
-    }
-  }
-
-  checkField("Product description", data.description, 35, 18,
-    "Explain what the product is, its features and what the customer receives.",
-    text => /[a-z]{3,}/i.test(text) && /[a-z]{3,}\s+[a-z]{3,}/i.test(text));
-
-  checkField("Product benefits", data.benefits, 20, 12,
-    "Explain how the product helps the customer or what makes it useful.");
-
-  checkField("Price information", data.price, 2, 8,
-    "Provide the actual price and currency where appropriate.", text => /\d/.test(text));
-
-  checkField("Shipping information", data.shipping, 20, 12,
-    "Include delivery estimates, shipping charges or relevant conditions.",
-    text => /\d/.test(text) || /free|business days|working days|delivery|dispatch|shipping cost/i.test(text));
-
-  checkField("Returns policy", data.returns, 20, 8,
-    "Explain the return window, conditions or refund process.",
-    text => /\d/.test(text) || /days|weeks|refund|exchange|unused|return window/i.test(text));
-
-  checkField("Customer reviews", data.reviews, 15, 10,
-    "If genuine reviews exist, include relevant customer feedback or ratings.");
-
-  checkField("Product images", data.images, 15, 12,
-    "Describe the actual images available, such as product angles, close-ups or scale comparisons.");
-
-  checkField("Target audience", data.audience, 12, 5,
-    "Describe the type of customer who would find this product useful.");
-
-  return {
-    score: Math.max(0, Math.min(100, score)),
-    findings,
-    disclaimer: "This is a basic rules-based checklist, not an AI-verified quality score or a prediction of sales."
-  };
-}
-
-function createId() {
-  return typeof crypto !== "undefined" && crypto.randomUUID
-    ? crypto.randomUUID()
-    : Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 12);
-}
-
-function createReport(data) {
-  const checklist = runChecklist(data);
-
-  return {
-    id: createId(),
-    createdAt: new Date().toISOString(),
-    name: data.productName,
-    data,
-    score: checklist.score,
-    findings: checklist.findings,
-    disclaimer: checklist.disclaimer,
-    aiAudit: "",
-    aiState: "not-run"
-  };
-}
-
-function formatDate(value) {
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "Date unavailable" : date.toLocaleString();
-}
-
-/*
-  Counts explicit priority labels in the AI text.
-  For best results, recommendations should label each item HIGH, MEDIUM or LOW.
-*/
-function getPriorityCounts(text) {
-  const counts = { high: 0, medium: 0, low: 0 };
-  const lines = String(text || "").split(/\r?\n/);
-
-  for (const line of lines) {
-    const isRecommendation =
-      /^\s*(?:[-*•]\s+|\d+[.)]\s+)?(?:\*\*)?(?:HIGH|MEDIUM|LOW)(?:\s+PRIORITY)?(?:\*\*)?\s*[:—-]/i.test(line) ||
-      /^\s*(?:[-*•]\s+|\d+[.)]\s+)?(?:\*\*)?Priority(?:\*\*)?\s*:\s*(?:HIGH|MEDIUM|LOW)\b/i.test(line);
-
-    if (!isRecommendation) continue;
-
-    if (/\bHIGH(?:\s+PRIORITY)?\b/i.test(line) || /\bPriority\s*:\s*HIGH\b/i.test(line)) {
-      counts.high++;
-    } else if (/\bMEDIUM(?:\s+PRIORITY)?\b/i.test(line) || /\bPriority\s*:\s*MEDIUM\b/i.test(line)) {
-      counts.medium++;
-    } else if (/\bLOW(?:\s+PRIORITY)?\b/i.test(line) || /\bPriority\s*:\s*LOW\b/i.test(line)) {
-      counts.low++;
-    }
-  }
-
-  return counts;
-}
-
-function renderPrioritySummary(report) {
-  const summary = $("prioritySummary");
-
-  if (!report.aiAudit) {
-    summary.hidden = true;
-    summary.textContent = "";
-    return;
-  }
-
-  const counts = getPriorityCounts(report.aiAudit);
-  summary.textContent =
-    "PRIORITY SUMMARY\n" +
-    "🔴 High: " + counts.high + "\n" +
-    "🟠 Medium: " + counts.medium + "\n" +
-    "🟢 Low: " + counts.low;
-  summary.hidden = false;
-}
-
-function renderReport(report) {
-  currentReport = report;
-  $("emptyState").hidden = true;
-  $("reportContent").hidden = false;
-  $("reportTitle").textContent = report.name || "Product report";
-  $("reportDate").textContent = "Created " + formatDate(report.createdAt);
-
-  const score = Number.isFinite(report.score) ? Math.max(0, Math.min(100, report.score)) : 0;
-  $("reportScore").textContent = score + "/100";
-  $("scoreFill").style.width = score + "%";
-
-  const list = $("issueList");
-  list.replaceChildren();
-
-  (Array.isArray(report.findings) ? report.findings : []).forEach(finding => {
-    const article = document.createElement("article");
-    article.className = "issue";
-
-    const priority = document.createElement("span");
-    priority.className = "priority";
-    priority.textContent = safeText(finding.priority) || "Finding";
-
-    const title = document.createElement("strong");
-    title.textContent = safeText(finding.title) || "Checklist finding";
-
-    const detail = document.createElement("p");
-    detail.textContent = safeText(finding.detail);
-
-    article.append(priority, title, detail);
-    list.appendChild(article);
-  });
-
-  renderPrioritySummary(report);
-  $("aiOutput").textContent = report.aiAudit ||
-    "No AI recommendations yet. Select Get AI Recommendations to start.";
-
-  clearStatus(aiStatus);
-  if (report.aiState === "error") {
-    showStatus(aiStatus, "The previous AI request failed. You can try again.", "error");
-  }
-
-  setBusy(auditInProgress);
-  setAiBusy(aiInProgress);
-}
-
-function getSavedReports() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-    return Array.isArray(parsed) ? parsed.filter(item =>
-      item && typeof item === "object" &&
-      typeof item.name === "string" &&
-      typeof item.createdAt === "string"
-    ) : [];
-  } catch (error) {
-    console.error("Could not read saved reports:", error);
-    return [];
-  }
-}
-
-function writeSavedReports(reports) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(reports));
-    return true;
-  } catch (error) {
-    console.error("Could not save reports:", error);
-    showStatus(savedStatus, "Could not save reports. Browser storage may be full or disabled.", "error");
-    return false;
-  }
-}
-
-function setBusy(isBusy) {
-  auditInProgress = isBusy;
-  auditButton.disabled = isBusy;
-  auditButton.textContent = isBusy ? "Investigating…" : "Investigate Product";
-
-  form.querySelectorAll("input, textarea").forEach(field => {
-    field.disabled = isBusy;
-  });
-
-  aiButton.disabled = isBusy || aiInProgress || !currentReport;
-  saveButton.disabled = isBusy || aiInProgress || !currentReport;
-  copyButton.disabled = isBusy || aiInProgress || !currentReport;
-  downloadButton.disabled = isBusy || aiInProgress || !currentReport;
-}
-
-function setAiBusy(isBusy) {
-  aiInProgress = isBusy;
-  aiButton.disabled = isBusy || auditInProgress || !currentReport;
-  aiButton.textContent = isBusy ? "Investigating…" : "Get AI Recommendations";
-  saveButton.disabled = isBusy || auditInProgress || !currentReport;
-  copyButton.disabled = isBusy || auditInProgress || !currentReport;
-  downloadButton.disabled = isBusy || auditInProgress || !currentReport;
-  $("aiLoading").hidden = !isBusy;
-}
-
-function renderSavedReports() {
-  const list = $("savedList");
-  list.replaceChildren();
-  const reports = getSavedReports();
-
-  if (!reports.length) {
-    const empty = document.createElement("div");
-    empty.className = "empty-state";
-    empty.textContent = "No saved reports yet.";
-    list.appendChild(empty);
-    return;
-  }
-
-  reports.forEach(report => {
-    const item = document.createElement("article");
-    item.className = "saved-item";
-
-    const name = document.createElement("div");
-    name.className = "saved-name";
-    name.textContent = report.name;
-
-    const meta = document.createElement("div");
-    meta.className = "saved-meta";
-    meta.textContent = formatDate(report.createdAt) + " · Checklist: " +
-      (Number.isFinite(report.score) ? report.score + "/100" : "N/A");
-
-    const actions = document.createElement("div");
-    actions.className = "saved-actions";
-
-    const openButton = document.createElement("button");
-    openButton.type = "button";
-    openButton.className = "button button-small";
-    openButton.textContent = "Open";
-    openButton.addEventListener("click", () => {
-      if (auditInProgress || aiInProgress) return;
-      fillForm(report.data || {});
-      renderReport(report);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-
-    const deleteButton = document.createElement("button");
-    deleteButton.type = "button";
-    deleteButton.className = "button button-small button-danger";
-    deleteButton.textContent = "Delete";
-    deleteButton.addEventListener("click", () => {
-      if (auditInProgress || aiInProgress) return;
-      const updated = getSavedReports().filter(entry => entry.id !== report.id);
-      if (writeSavedReports(updated)) {
-        renderSavedReports();
-        showStatus(savedStatus, "Report deleted.", "success");
-      }
-    });
-
-    actions.append(openButton, deleteButton);
-    item.append(name, meta, actions);
-    list.appendChild(item);
-  });
-}
-
-function fillForm(data) {
-  for (const field of form.elements) {
-    if (field.name) field.value = typeof data[field.name] === "string" ? data[field.name] : "";
-  }
-  clearStatus(formStatus);
-}
-
-function reportAsText(report) {
-  const lines = [
-    "CART DETECTIVE REPORT",
-    "=====================",
-    "Product: " + report.name,
-    "Date: " + formatDate(report.createdAt),
-    "Checklist score: " + report.score + "/100",
-    "",
-    "DISCLAIMER",
-    report.disclaimer || "This checklist is not a sales prediction.",
-    "",
-    "CHECKLIST FINDINGS"
-  ];
-
-  (report.findings || []).forEach(finding => {
-    lines.push("", "[" + (finding.priority || "Finding") + "] " + finding.title, finding.detail);
-  });
-
-  lines.push("", "AI RECOMMENDATIONS", report.aiAudit || "Not run.");
-
-  if (report.aiAudit) {
-    const counts = getPriorityCounts(report.aiAudit);
-    lines.push(
-      "",
-      "PRIORITY SUMMARY",
-      "High: " + counts.high,
-      "Medium: " + counts.medium,
-      "Low: " + counts.low
-    );
-  }
-
-  return lines.join("\n");
-}
-
-function saveCurrentReport() {
-  if (!currentReport || auditInProgress || aiInProgress) return;
-
-  const reports = getSavedReports();
-  const savedCopy = JSON.parse(JSON.stringify(currentReport));
-  const index = reports.findIndex(item => item.id === savedCopy.id);
-
-  if (index >= 0) reports[index] = savedCopy;
-  else reports.unshift(savedCopy);
-
-  if (writeSavedReports(reports.slice(0, MAX_SAVED_REPORTS))) {
-    renderSavedReports();
-    showStatus(savedStatus, "Report saved in this browser.", "success");
-  }
-}
-
-async function copyCurrentReport() {
-  if (!currentReport || auditInProgress || aiInProgress) return;
-  const text = reportAsText(currentReport);
-
-  try {
-    await navigator.clipboard.writeText(text);
-    showStatus(savedStatus, "Report copied to clipboard.", "success");
-  } catch (error) {
-    console.error("Clipboard error:", error);
-    const area = document.createElement("textarea");
-    area.value = text;
-    area.style.position = "fixed";
-    area.style.opacity = "0";
-    document.body.appendChild(area);
-    area.select();
-
-    let copied = false;
-    try { copied = document.execCommand("copy"); } catch {}
-    area.remove();
-
-    showStatus(
-      savedStatus,
-      copied ? "Report copied to clipboard." : "Clipboard access was blocked. Use Download Report instead.",
-      copied ? "success" : "error"
-    );
-  }
-}
-
-function downloadCurrentReport() {
-  if (!currentReport || auditInProgress || aiInProgress) return;
-
-  const blob = new Blob([reportAsText(currentReport)], { type: "text/plain;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "cart-detective-" +
-    (currentReport.name || "report").replace(/[^a-z0-9-_]+/gi, "-").replace(/^-+|-+$/g, "").slice(0, 80) +
-    ".txt";
-
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-function extractAiText(payload) {
-  if (!payload || typeof payload !== "object") {
-    throw new Error("The AI server returned an invalid response.");
-  }
-
-  if (payload.error) {
-    const message = typeof payload.error === "string" ? payload.error : payload.error.message;
-    if (typeof message === "string" && message.trim()) throw new Error(message.trim());
-  }
-
-  for (const key of ["audit", "text", "result", "response"]) {
-    if (typeof payload[key] === "string" && payload[key].trim()) return payload[key].trim();
-  }
-
-  if (Array.isArray(payload.candidates) && payload.candidates[0]?.content?.parts) {
-    const text = payload.candidates[0].content.parts
-      .map(part => typeof part.text === "string" ? part.text : "")
-      .join("\n").trim();
-
-    if (text) return text;
-  }
-
-  throw new Error("The AI server responded, but no usable recommendation text was found.");
-}
-
-async function requestAiAudit(report) {
-  const controller = new AbortController();
-  let timedOut = false;
-
-  const timeoutId = setTimeout(() => {
-    timedOut = true;
-    controller.abort();
-  }, AI_TIMEOUT_MS);
-
-  try {
-    const response = await fetch(AI_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify({
-        productName: report.data.productName,
-        url: report.data.productUrl,
-        price: report.data.price,
-        description: report.data.description,
-        benefits: report.data.benefits,
-        shipping: report.data.shipping,
-        returns: report.data.returns,
-        reviews: report.data.reviews,
-        images: report.data.images,
-        audience: report.data.audience
-      }),
-      signal: controller.signal
-    });
-
-    const responseText = await response.text();
-    let payload = null;
-
-    try { payload = responseText ? JSON.parse(responseText) : null; } catch {}
-
-    if (!response.ok) {
-      let detail = "";
-
-      if (payload && typeof payload === "object") {
-        if (typeof payload.error === "string") detail = payload.error;
-        else if (payload.error && typeof payload.error.message === "string") detail = payload.error.message;
-        else if (typeof payload.message === "string") detail = payload.message;
+  <script>
+    "use strict";
+
+    const API_URL =
+      "https://cart-detective-api.ceemacdee.workers.dev/";
+
+    const STORAGE_KEY = "cartDetectiveReports";
+    const MAX_SAVED_REPORTS = 50;
+
+    const $ = (id) => document.getElementById(id);
+
+    let currentReport = null;
+    let isAuditing = false;
+
+    function getFormData() {
+      const fields = [
+        "productName",
+        "productUrl",
+        "price",
+        "description",
+        "benefits",
+        "shipping",
+        "returns",
+        "reviews",
+        "images",
+        "audience"
+      ];
+
+      const data = {};
+
+      for (const field of fields) {
+        data[field] = $(field).value.trim();
       }
 
-      throw new Error(
-        "AI request failed with HTTP " + response.status + "." +
-        (detail ? " " + detail : " Check the Cloudflare Worker logs and Gemini API configuration.")
+      return data;
+    }
+
+    function getChecklistScore() {
+      const boxes = [
+        ...document.querySelectorAll("#checklist input[type='checkbox']")
+      ];
+
+      const total = boxes.reduce(
+        (sum, box) => sum + Number(box.dataset.points || 0),
+        0
+      );
+
+      const earned = boxes.reduce(
+        (sum, box) => sum + (box.checked ? Number(box.dataset.points || 0) : 0),
+        0
+      );
+
+      return total ? Math.round((earned / total) * 100) : 0;
+    }
+
+    function getChecklistFindings() {
+      const boxes = [
+        ...document.querySelectorAll("#checklist input[type='checkbox']")
+      ];
+
+      return boxes.map((box) => ({
+        text: box.parentElement.querySelector("span").textContent.trim(),
+        completed: box.checked
+      }));
+    }
+
+    function updateScore() {
+      const score = getChecklistScore();
+
+      $("score").textContent = score;
+      $("scoreFill").style.width = score + "%";
+
+      if (score >= 80) {
+        $("scoreLabel").textContent = "Strong checklist coverage";
+      } else if (score >= 50) {
+        $("scoreLabel").textContent = "Some important areas need attention";
+      } else {
+        $("scoreLabel").textContent = "Several areas may need improvement";
+      }
+
+      const findings = getChecklistFindings();
+      const missing = findings.filter((item) => !item.completed);
+      const completed = findings.filter((item) => item.completed);
+
+      $("findings").replaceChildren();
+
+      const summary = document.createElement("p");
+      summary.className = "muted";
+      summary.textContent =
+        completed.length + " of " + findings.length +
+        " checklist items completed.";
+
+      $("findings").appendChild(summary);
+
+      if (missing.length) {
+        const heading = document.createElement("h3");
+        heading.textContent = "Items to review";
+        $("findings").appendChild(heading);
+
+        for (const item of missing) {
+          const div = document.createElement("div");
+          div.className = "finding";
+
+          const strong = document.createElement("strong");
+          strong.textContent = "Needs checking";
+
+          const text = document.createElement("div");
+          text.textContent = item.text;
+
+          div.append(strong, text);
+          $("findings").appendChild(div);
+        }
+      } else {
+        const done = document.createElement("div");
+        done.className = "finding";
+        done.textContent = "All checklist items are marked complete.";
+        $("findings").appendChild(done);
+      }
+
+      return score;
+    }
+
+    /*
+      Counts explicit priority labels on recommendation lines.
+      Each line is counted at most once. Summary headings are ignored.
+    */
+    function getPriorityCounts(text) {
+      const counts = { high: 0, medium: 0, low: 0 };
+      const lines = String(text || "").split(/\r?\n/);
+
+      for (const line of lines) {
+        const cleaned = line.trim();
+
+        if (!cleaned) continue;
+
+        // Ignore summary headings and count labels only on individual lines.
+        if (/^priority\s+summary\b/i.test(cleaned)) continue;
+        if (/^(high|medium|low)\s*:\s*\d+\s*$/i.test(cleaned)) continue;
+
+        const hasHigh =
+          /\[(?:HIGH|HIGH PRIORITY)\]/i.test(cleaned) ||
+          /\bHIGH\s+PRIORITY\s*:/i.test(cleaned) ||
+          /\bPRIORITY\s*:\s*HIGH\b/i.test(cleaned) ||
+          /🔴\s*HIGH\b/i.test(cleaned);
+
+        const hasMedium =
+          /\[(?:MEDIUM|MEDIUM PRIORITY)\]/i.test(cleaned) ||
+          /\bMEDIUM\s+PRIORITY\s*:/i.test(cleaned) ||
+          /\bPRIORITY\s*:\s*MEDIUM\b/i.test(cleaned) ||
+          /🟠\s*MEDIUM\b/i.test(cleaned);
+
+        const hasLow =
+          /\[(?:LOW|LOW PRIORITY)\]/i.test(cleaned) ||
+          /\bLOW\s+PRIORITY\s*:/i.test(cleaned) ||
+          /\bPRIORITY\s*:\s*LOW\b/i.test(cleaned) ||
+          /🟢\s*LOW\b/i.test(cleaned);
+
+        if (hasHigh) {
+          counts.high++;
+        } else if (hasMedium) {
+          counts.medium++;
+        } else if (hasLow) {
+          counts.low++;
+        }
+      }
+
+      return counts;
+    }
+
+    function renderPrioritySummary(text) {
+      const counts = getPriorityCounts(text);
+
+      $("prioritySummary").textContent =
+        "PRIORITY SUMMARY\n" +
+        "🔴 High: " + counts.high + "\n" +
+        "🟠 Medium: " + counts.medium + "\n" +
+        "🟢 Low: " + counts.low;
+
+      $("prioritySummary").style.display = "block";
+    }
+
+    function showAiAudit(text) {
+      $("aiResults").classList.remove("hidden");
+      $("aiPlaceholder").classList.add("hidden");
+
+      // Show the priority summary BEFORE the detailed AI audit.
+      renderPrioritySummary(text);
+      $("aiOutput").textContent = text;
+
+      $("copyButton").disabled = false;
+      $("downloadButton").disabled = false;
+      $("saveButton").disabled = false;
+    }
+
+    function setStatus(message, type = "") {
+      $("status").textContent = message;
+      $("status").className = "status" + (type ? " " + type : "");
+    }
+
+    async function requestAiAudit(report) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000);
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            ...report.product,
+            score: report.score,
+            checklist: report.checklist
+          }),
+          signal: controller.signal
+        });
+
+        const rawText = await response.text();
+
+        let payload;
+
+        try {
+          payload = JSON.parse(rawText);
+        } catch {
+          throw new Error(
+            "The API returned an invalid response. Check your Cloudflare Worker."
+          );
+        }
+
+        if (!response.ok) {
+          const message =
+            payload.error ||
+            payload.message ||
+            "The AI request failed with HTTP " + response.status + ".";
+
+          throw new Error(message);
+        }
+
+        if (payload.error) {
+          throw new Error(payload.error);
+        }
+
+        const audit = payload.audit;
+
+        if (typeof audit !== "string" || !audit.trim()) {
+          throw new Error(
+            "The API response did not contain a usable 'audit' string."
+          );
+        }
+
+        return audit;
+      } catch (error) {
+        if (error.name === "AbortError") {
+          throw new Error("The AI request timed out. Please try again.");
+        }
+
+        if (error instanceof TypeError) {
+          throw new Error(
+            "Could not connect to the API. Check the Worker URL and CORS settings."
+          );
+        }
+
+        throw error;
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    }
+
+    function buildReportText(report) {
+      const product = report.product || {};
+      const audit = report.aiAudit || "No AI audit has been generated.";
+
+      const counts = getPriorityCounts(audit);
+
+      const checklistText = (report.checklist || [])
+        .map((item) =>
+          (item.completed ? "[x] " : "[ ] ") + item.text
+        )
+        .join("\n");
+
+      return [
+        "CART DETECTIVE — PRODUCT PAGE AUDIT",
+        "===================================",
+        "",
+        "Product: " + (product.productName || ""),
+        "URL: " + (product.productUrl || "Not provided"),
+        "Price: " + (product.price || "Not provided"),
+        "Checklist score: " + report.score + "/100",
+        "",
+        "PRIORITY SUMMARY",
+        "🔴 High: " + counts.high,
+        "🟠 Medium: " + counts.medium,
+        "🟢 Low: " + counts.low,
+        "",
+        "AI AUDIT",
+        "--------",
+        audit,
+        "",
+        "CHECKLIST",
+        "---------",
+        checklistText,
+        "",
+        "PRODUCT DETAILS",
+        "---------------",
+        "Description: " + (product.description || "Not provided"),
+        "Benefits: " + (product.benefits || "Not provided"),
+        "Shipping: " + (product.shipping || "Not provided"),
+        "Returns: " + (product.returns || "Not provided"),
+        "Reviews: " + (product.reviews || "Not provided"),
+        "Images: " + (product.images || "Not provided"),
+        "Audience: " + (product.audience || "Not provided")
+      ].join("\n");
+    }
+
+    function getSavedReports() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        return Array.isArray(saved) ? saved : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function setSavedReports(reports) {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(reports.slice(0, MAX_SAVED_REPORTS))
       );
     }
 
-    if (!payload) throw new Error("The AI server returned a response that was not valid JSON.");
-    return extractAiText(payload);
-  } catch (error) {
-    if (timedOut || error.name === "AbortError") {
-      throw new Error("The AI request took longer than 30 seconds and was stopped. Please try again.");
+    function renderSavedReports() {
+      const reports = getSavedReports();
+      const container = $("savedReports");
+
+      container.replaceChildren();
+
+      if (!reports.length) {
+        const message = document.createElement("p");
+        message.className = "muted";
+        message.textContent = "No saved reports yet.";
+        container.appendChild(message);
+        return;
+      }
+
+      for (const report of reports) {
+        const row = document.createElement("div");
+        row.className = "saved-report";
+
+        const info = document.createElement("div");
+        info.className = "saved-report-info";
+
+        const name = document.createElement("strong");
+        name.textContent = report.product?.productName || "Untitled product";
+
+        const date = document.createElement("small");
+        date.textContent =
+          new Date(report.createdAt).toLocaleString() +
+          " · Score " + report.score + "/100";
+
+        info.append(name, date);
+
+        const actions = document.createElement("div");
+        actions.className = "saved-report-actions";
+
+        const openButton = document.createElement("button");
+        openButton.textContent = "Open";
+        openButton.type = "button";
+        openButton.addEventListener("click", () => {
+          loadSavedReport(report.id);
+        });
+
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.type = "button";
+        deleteButton.addEventListener("click", () => {
+          deleteSavedReport(report.id);
+        });
+
+        actions.append(openButton, deleteButton);
+        row.append(info, actions);
+        container.appendChild(row);
+      }
     }
 
-    if (error instanceof TypeError) {
-      throw new Error("Could not connect to the AI server. Check your connection and the Worker CORS settings.");
+    function saveCurrentReport() {
+      if (!currentReport || !currentReport.aiAudit) return;
+
+      const reports = getSavedReports();
+
+      const savedReport = {
+        ...currentReport,
+        id: crypto.randomUUID
+          ? crypto.randomUUID()
+          : String(Date.now()) + Math.random().toString(16).slice(2),
+        createdAt: new Date().toISOString()
+      };
+
+      reports.unshift(savedReport);
+      setSavedReports(reports);
+      renderSavedReports();
+
+      setStatus("Report saved in this browser.", "success");
     }
 
-    throw error;
-  } finally {
-    clearTimeout(timeoutId);
-  }
-}
+    function loadSavedReport(id) {
+      const report = getSavedReports().find((item) => item.id === id);
 
-async function runAiAudit() {
-  if (!currentReport || aiInProgress || auditInProgress) return;
+      if (!report) {
+        setStatus("That saved report could not be found.", "error");
+        return;
+      }
 
-  clearStatus(aiStatus);
-  setAiBusy(true);
-  $("prioritySummary").hidden = true;
-  $("aiOutput").textContent = "Waiting for AI recommendations…";
+      currentReport = report;
 
-  try {
-    const recommendations = await requestAiAudit(currentReport);
+      for (const [key, value] of Object.entries(report.product || {})) {
+        const field = $(key);
+        if (field) field.value = value || "";
+      }
 
-    currentReport.aiAudit = recommendations;
-    currentReport.aiState = "complete";
+      const checklistItems = [
+        ...document.querySelectorAll("#checklist input[type='checkbox']")
+      ];
 
-    renderPrioritySummary(currentReport);
-    $("aiOutput").textContent = recommendations;
+      (report.checklist || []).forEach((item, index) => {
+        if (checklistItems[index]) {
+          checklistItems[index].checked = Boolean(item.completed);
+        }
+      });
 
-    showStatus(aiStatus, "AI recommendations received successfully.", "success");
-  } catch (error) {
-    console.error("AI audit failed:", error);
-    currentReport.aiAudit = "";
-    currentReport.aiState = "error";
-    renderPrioritySummary(currentReport);
-    $("aiOutput").textContent = "The AI investigation could not be completed. Your checklist report is still available.";
-    showStatus(aiStatus, error.message || "An unexpected error occurred during the AI request.", "error");
-  } finally {
-    setAiBusy(false);
-  }
-}
+      updateScore();
+      showAiAudit(report.aiAudit || "");
 
-form.addEventListener("submit", event => {
-  event.preventDefault();
-  if (auditInProgress || aiInProgress) return;
+      setStatus("Saved report opened.", "success");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
 
-  clearStatus(formStatus);
-  clearStatus(aiStatus);
+    function deleteSavedReport(id) {
+      const updated = getSavedReports().filter((item) => item.id !== id);
+      setSavedReports(updated);
+      renderSavedReports();
+      setStatus("Saved report deleted.", "success");
+    }
 
-  try {
-    const data = validateForm(getFormData());
-    renderReport(createReport(data));
-    showStatus(formStatus, "Checklist complete. You can now request AI recommendations.", "success");
-    $("reportPanel").scrollIntoView({ behavior: "smooth", block: "start" });
-  } catch (error) {
-    showStatus(formStatus, error.message, "error");
-  }
-});
+    async function copyReport() {
+      if (!currentReport) return;
 
-aiButton.addEventListener("click", runAiAudit);
-saveButton.addEventListener("click", saveCurrentReport);
-copyButton.addEventListener("click", copyCurrentReport);
-downloadButton.addEventListener("click", downloadCurrentReport);
+      try {
+        await navigator.clipboard.writeText(buildReportText(currentReport));
+        setStatus("Report copied to clipboard.", "success");
+      } catch {
+        setStatus(
+          "Copy failed. Your browser may require a secure connection.",
+          "error"
+        );
+      }
+    }
 
-$("clearSavedButton").addEventListener("click", () => {
-  if (auditInProgress || aiInProgress) return;
+    function downloadReport() {
+      if (!currentReport) return;
 
-  const reports = getSavedReports();
-  if (!reports.length) {
-    showStatus(savedStatus, "There are no saved reports to delete.", "info");
-    return;
-  }
+      const text = buildReportText(currentReport);
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
 
-  if (!confirm("Delete all saved Cart Detective reports from this browser?")) return;
+      const link = document.createElement("a");
+      link.href = url;
 
-  if (writeSavedReports([])) {
-    renderSavedReports();
-    showStatus(savedStatus, "All saved reports deleted.", "success");
-  }
-});
+      const safeName = (currentReport.product?.productName || "product-audit")
+        .replace(/[^a-z0-9-_]+/gi, "-")
+        .replace(/^-+|-+$/g, "")
+        .toLowerCase();
 
-renderSavedReports();
+      link.download = (safeName || "product-audit") + ".txt";
 
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js").catch(error => {
-      console.warn("Optional service worker was not registered:", error);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      URL.revokeObjectURL(url);
+      setStatus("Report downloaded.", "success");
+    }
+
+    async function runAiAudit(event) {
+      event.preventDefault();
+
+      if (isAuditing) return;
+
+      const product = getFormData();
+
+      if (!product.productName) {
+        setStatus("Please enter a product name.", "error");
+        $("productName").focus();
+        return;
+      }
+
+      isAuditing = true;
+      $("auditButton").disabled = true;
+      $("auditButton").textContent = "Analysing...";
+      $("copyButton").disabled = true;
+      $("downloadButton").disabled = true;
+      $("saveButton").disabled = true;
+
+      setStatus("Analysing your product page. This may take a moment.");
+
+      const report = {
+        product,
+        score: updateScore(),
+        checklist: getChecklistFindings(),
+        aiAudit: "",
+        createdAt: new Date().toISOString()
+      };
+
+      currentReport = report;
+
+      try {
+        const recommendations = await requestAiAudit(report);
+
+        report.aiAudit = recommendations;
+        currentReport = report;
+
+        // Priority summary is rendered first, above the AI output.
+        showAiAudit(recommendations);
+
+        setStatus("Audit completed successfully.", "success");
+      } catch (error) {
+        console.error("Cart Detective audit error:", error);
+
+        setStatus(
+          error.message || "Something went wrong. Please try again.",
+          "error"
+        );
+      } finally {
+        isAuditing = false;
+        $("auditButton").disabled = false;
+        $("auditButton").textContent = "Analyse product page";
+      }
+    }
+
+    $("productForm").addEventListener("submit", runAiAudit);
+
+    document.querySelectorAll("#checklist input").forEach((box) => {
+      box.addEventListener("change", updateScore);
     });
-  });
-}
-</script>
+
+    $("copyButton").addEventListener("click", copyReport);
+    $("downloadButton").addEventListener("click", downloadReport);
+    $("saveButton").addEventListener("click", saveCurrentReport);
+
+    $("clearReportsButton").addEventListener("click", () => {
+      const reports = getSavedReports();
+
+      if (!reports.length) {
+        setStatus("There are no saved reports to delete.");
+        return;
+      }
+
+      if (!confirm("Delete all saved reports from this browser?")) return;
+
+      localStorage.removeItem(STORAGE_KEY);
+      renderSavedReports();
+      setStatus("All saved reports deleted.", "success");
+    });
+
+    updateScore();
+    renderSavedReports();
+  </script>
 </body>
 </html>
 ```
