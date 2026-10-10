@@ -1354,7 +1354,22 @@ function runChecklist(data) {
         currentReport.aiAudit = recommendations;
         currentReport.aiState = "complete";
 
-        $("aiOutput").textContent = recommendations;
+        
+const priorityCounts = {
+  high: (recommendations.match(/\bHIGH PRIORITY\b/gi) || []).length,
+  medium: (recommendations.match(/\bMEDIUM PRIORITY\b/gi) || []).length,
+  low: (recommendations.match(/\bLOW PRIORITY\b/gi) || []).length
+};
+
+$("aiOutput").textContent =
+  "PRIORITY SUMMARY\n" +
+  "🔴 High: " + priorityCounts.high + "\n" +
+  "🟠 Medium: " + priorityCounts.medium + "\n" +
+  "🟢 Low: " + priorityCounts.low +
+  "\n\n" +
+  "RECOMMENDATIONS\n" +
+  recommendations;
+
 
         showStatus(
           aiStatus,
