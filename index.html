@@ -681,114 +681,170 @@
     }
 
     // This is a simple information checklist, not a conversion prediction.
-    function runChecklist(data) {
-      let score = 100;
-      const findings = [];
 
-      function flag(title, detail, points, priority = "Improve") {
-        score -= points;
-        findings.push(makeFinding(title, detail, points, priority));
-      }
+function runChecklist(data) {
+  let score = 100;
+  const findings = [];
 
-      if (!data.description) {
-        flag(
-          "Add a product description",
-          "Explain what the product is, how it works and what the customer receives.",
-          18
-        );
-      } else if (data.description.length < 60) {
-        flag(
-          "Expand the description",
-          "The description is quite short. Add useful details, features and answers to likely questions.",
-          8
-        );
-      }
+  function checkField(title, value, minLength, points, advice, test) {
+    const text = String(value || "").trim();
 
-      if (!data.benefits) {
-        flag(
-          "Explain the benefits",
-          "Describe the practical or emotional reasons someone might want this product.",
-          12
-        );
-      }
-
-      if (!data.price) {
-        flag(
-          "Check price visibility",
-          "Make sure the price is clearly displayed on the product page.",
-          8,
-          "Check"
-        );
-      }
-
-      if (!data.shipping) {
-        flag(
-          "Explain shipping",
-          "Clearly communicate shipping costs, delivery estimates and any free-shipping conditions.",
-          12
-        );
-      }
-
-      if (!data.returns) {
-        flag(
-          "Explain returns",
-          "Provide a clear, easy-to-find returns and refund policy.",
-          8
-        );
-      }
-
-      if (!data.reviews) {
-        flag(
-          "Consider genuine customer reviews",
-          "If available, display authentic reviews and ratings to help customers make informed decisions.",
-          10
-        );
-      }
-
-      if (!data.images) {
-        flag(
-          "Review your product images",
-          "Use clear images that show the product accurately from useful angles.",
-          12
-        );
-      }
-
-      if (!data.audience) {
-        flag(
-          "Define your target audience",
-          "Identify who the product is for so your copy and imagery can speak to those customers.",
-          5,
-          "Tip"
-        );
-      }
-
-      if (data.description && data.benefits) {
-        findings.push(makeFinding(
-          "Product information supplied",
-          "You have entered both a description and benefits. Check that they are clear, accurate and easy to scan.",
-          0,
-          "Good"
-        ));
-      }
-
-      if (findings.length === 0) {
-        findings.push(makeFinding(
-          "Basic information supplied",
-          "All checklist fields have information. Review the page itself to confirm the details are accurate and easy to find.",
-          0,
-          "Good"
-        ));
-      }
-
-      score = Math.max(0, Math.min(100, score));
-
-      return {
-        score,
-        findings,
-        scoreLabel: "Checklist score",
-        disclaimer: "This score measures information supplied to this checklist. It does not predict sales or conversion rates."
-      };
+    if (!text) {
+      score -= points;
+      findings.push({
+        title: "Missing: " + title,
+        detail: advice,
+        points,
+        priority: "Improve"
+      });
+      return;
     }
+
+    // Catch extremely short answers and repeated nonsense.
+    const words = text.toLowerCase()
+      .replace(/https?:\/\/\S+/g, "")
+      .match(/[a-z0-9]+/g) || [];
+
+    const uniqueWords = new Set(words);
+    const looksRepeated = words.length >= 3 &&
+      uniqueWords.size / words.length < 0.4;
+
+    const genericAnswers = new Set([
+      "john", "test", "testing", "n/a", "na", "none",
+      "nothing", "asdf", "hello", "example", "idk",
+      "no", "yes", "good", "stuff", "product"
+    ]);
+
+    const isGeneric = words.length > 0 &&
+      words.every(word => genericAnswers.has(word));
+
+    let problem = "";
+
+    if (text.length < minLength) {
+      problem = "This answer is too short to provide enough useful information.";
+    } else if (isGeneric || looksRepeated) {
+      problem = "This answer looks generic or repetitive rather than specific to the product.";
+    } else if (test && !test(text)) {
+      problem = "This answer may be missing important details for this field.";
+    }
+
+    if (problem) {
+      score -= points;
+      findings.push({
+        title: "Improve: " + title,
+        detail: problem + " " + advice,
+        points,
+        priority: "Improve"
+      });
+    } else {
+      findings.push({
+        title: title + " provided",
+        detail: "The answer contains some useful information. Check that it is accurate and complete.",
+        points: 0,
+        priority: "Check"
+      });
+    }
+  }
+
+  checkField(
+    "Product description",
+    data.description,
+    35,
+    18,
+    "Explain what the product is, its features and what the customer receives.",
+    text => /[a-z]{3,}/i.test(text) &&
+      /[a-z]{3,}\s+[a-z]{3,}/i.test(text)
+  );
+
+  checkField(
+    "Product benefits",
+    data.benefits,
+    20,
+    12,
+    "Explain how the product helps the customer or what makes it useful."
+  );
+
+  checkField(
+    "Price information",
+    data.price,
+    2,
+    8,
+    "Provide the actual price and currency where appropriate.",
+    text => /\d/.test(text)
+  );
+
+  checkField(
+    "Shipping information",
+    data.shipping,
+    20,
+    12,
+    "Include delivery estimates, shipping charges or relevant shipping conditions.",
+    text => /\d/.test(text) ||
+      /free|business days|working days|delivery|dispatch|shipping cost/i.test(text)
+  );
+
+  checkField(
+    "Returns policy",
+    data.returns,
+    20,
+    8,
+    "Explain the return window, conditions or refund process.",
+    text => /\d/.test(text) ||
+      /days|weeks|refund|exchange|unused|return window/i.test(text)
+  );
+
+  checkField(
+    "Customer reviews",
+    data.reviews,
+    15,
+    10,
+    "If genuine reviews exist, include relevant customer feedback or ratings."
+  );
+
+  checkField(
+    "Product images",
+    data.images,
+    15,
+    12,
+    "Describe the actual images available, such as product angles, close-ups or scale comparisons."
+  );
+
+  checkField(
+    "Target audience",
+    data.audience,
+    12,
+    5,
+    "Describe the type of customer who would find this product useful."
+  );
+
+  // A product name is required, but a URL is optional and does not affect score.
+  if (!String(data.productName || "").trim()) {
+    score -= 15;
+    findings.push({
+      title: "Product name missing",
+      detail: "Provide a clear product name so the report identifies what is being assessed.",
+      points: 15,
+      priority: "Improve"
+    });
+  }
+
+  if (!findings.length) {
+    findings.push({
+      title: "No checklist findings",
+      detail: "Review the actual product page to verify the information.",
+      points: 0,
+      priority: "Check"
+    });
+  }
+
+  return {
+    score: Math.max(0, Math.min(100, score)),
+    findings,
+    scoreLabel: "Information quality checklist",
+    disclaimer: "This is a basic rules-based checklist, not an AI-verified quality score or a prediction of sales."
+  };
+}
+
 
     function formatDate(value) {
       const date = new Date(value);
