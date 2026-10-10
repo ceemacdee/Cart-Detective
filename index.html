@@ -229,7 +229,7 @@ footer { border-top: 1px solid var(--line); padding: 22px 5%; text-align: center
 
         <button class="primary full" type="submit">Run my audit →</button>
       </form>
-      <p class="notice">Your form data stays in this browser in this prototype. Don't enter customer personal information.</p>
+      <p class="notice">Product details are sent to Gemini to generate AI recommendations. Don't enter customer personal information.</p>
     </section>
 
     <section class="panel" aria-live="polite">
@@ -524,11 +524,6 @@ $("auditForm").addEventListener("submit", async event => {
     behavior: "smooth",
     block: "start"
   });
-});
-
-  event.preventDefault();
-  renderReport(audit());
-  $("results").scrollIntoView({behavior: "smooth", block: "start"});
 });
 
 $("copyReport").addEventListener("click", async () => {
