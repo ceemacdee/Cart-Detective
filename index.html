@@ -1,821 +1,963 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <link
-  rel="stylesheet"
-  href="https://static.shuffle.dev/uploads/files/55/55bb9484e661a4a6c050f645797115876f017aa4/css/6939980a7f36a8e05b3bd93b60ffec87.css"
->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fafaf9">
+  <meta name="description" content="Find what's hurting your product page with Cart Detective's AI-powered product page audit.">
+  <title>Cart Detective — Improve Your Product Page</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<style>
+  <style>
     :root {
-      --bg: #0d0d0f;
-      --panel: #17171b;
-      --border: #303036;
-      --text: #f5f5f7;
-      --muted: #a5a5af;
-      --orange: #ff8a36;
-      --green: #55d68b;
-      --red: #ff6262;
-      --yellow: #ffc857;
+      --bg: #fafaf9;
+      --white: #fff;
+      --text: #292524;
+      --muted: #78716c;
+      --line: #e7e5e4;
+      --orange: #f97316;
+      --orange-dark: #ea580c;
+      --orange-light: #fff7ed;
+      --green: #059669;
+      --red: #dc2626;
+      --radius: 20px;
+      --shadow: 0 8px 30px rgba(41,37,36,.045);
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 90px; }
     body {
       margin: 0;
       background: var(--bg);
       color: var(--text);
-      font-family: Arial, Helvetica, sans-serif;
-      line-height: 1.6;
+      font-family: "DM Sans", sans-serif;
+      line-height: 1.65;
     }
-
-    header {
-      padding: 28px 20px;
-      border-bottom: 1px solid var(--border);
-      background: #111113;
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { opacity: .55; cursor: not-allowed; }
+    h1, h2, h3, .logo { font-family: "Space Grotesk", sans-serif; }
+    h1, h2, h3, p { margin-top: 0; }
+    p { color: var(--muted); }
+    .container { width: min(1160px, 92%); margin: auto; }
+    .section { padding: 82px 0; }
+    .section-heading { max-width: 650px; margin: 0 auto 38px; text-align: center; }
+    .section-heading h2 { font-size: clamp(28px, 4vw, 40px); line-height: 1.2; margin-bottom: 12px; letter-spacing: -1px; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 12px; border-radius: 999px;
+      background: var(--orange-light); color: #c2410c;
+      font-size: 12px; font-weight: 800; letter-spacing: 1px;
+      text-transform: uppercase; margin-bottom: 18px;
     }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); }
 
-    .header-inner,
-    main {
-      max-width: 1050px;
-      margin: auto;
+    /* Navigation */
+    .navbar {
+      position: sticky; top: 0; z-index: 20;
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
     }
-
-    .brand {
-      color: var(--orange);
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+    .nav-inner {
+      min-height: 76px; display: flex; align-items: center;
+      justify-content: space-between; gap: 24px;
     }
-
-    h1 {
-      margin: 6px 0;
-      font-size: clamp(27px, 5vw, 42px);
-      line-height: 1.2;
+    .logo { display: inline-flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; }
+    .logo-icon {
+      display: grid; place-items: center; width: 38px; height: 38px;
+      border-radius: 12px; color: white; background: var(--orange);
+      font-size: 21px; font-weight: 800;
     }
+    .nav-links { display: flex; align-items: center; gap: 28px; font-size: 14px; font-weight: 600; }
+    .nav-links a:not(.btn) { color: #57534e; }
+    .nav-links a:not(.btn):hover { color: var(--orange-dark); }
 
-    h2 {
-      margin-top: 0;
-      font-size: 21px;
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 8px; padding: 12px 19px; border: 1px solid transparent;
+      border-radius: 11px; font-size: 14px; font-weight: 700;
+      transition: transform .18s, background .18s, box-shadow .18s;
     }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { background: var(--orange); color: white; }
+    .btn-primary:hover { background: var(--orange-dark); box-shadow: 0 7px 18px #f9731630; }
+    .btn-secondary { background: white; border-color: var(--line); color: var(--text); }
+    .btn-secondary:hover { background: #f5f5f4; }
+    .btn-dark { background: #292524; color: white; }
+    .btn-small { padding: 9px 13px; font-size: 12px; }
 
-    h3 {
-      font-size: 16px;
+    /* Hero */
+    .hero { padding: 88px 0 76px; overflow: hidden; }
+    .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; align-items: center; gap: 60px; }
+    .hero h1 {
+      font-size: clamp(42px, 5.6vw, 68px); line-height: 1.06;
+      letter-spacing: -2.8px; margin-bottom: 22px; max-width: 700px;
     }
-
-    p {
-      color: var(--muted);
+    .hero h1 span { color: var(--orange); }
+    .hero-copy { font-size: 17px; line-height: 1.8; max-width: 570px; margin-bottom: 28px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 28px; }
+    .trust-note { display: flex; align-items: center; gap: 9px; font-size: 13px; color: var(--muted); }
+    .trust-note strong { color: #57534e; }
+    .hero-visual {
+      position: relative; padding: 22px; border-radius: 28px;
+      background: linear-gradient(140deg, #ffedd5, #fff7ed 45%, #f5f5f4);
+      border: 1px solid #fed7aa;
     }
-
-    main {
-      padding: 25px 16px 60px;
+    .mock-window {
+      background: white; border: 1px solid #e7e5e4;
+      border-radius: 18px; padding: 23px;
+      box-shadow: 0 20px 60px #7c2d1210;
     }
-
-    .intro {
-      margin-bottom: 25px;
+    .mock-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 22px; }
+    .mock-dots { display: flex; gap: 5px; }
+    .mock-dots i { width: 8px; height: 8px; border-radius: 50%; background: #d6d3d1; }
+    .mock-tag { background: #ecfdf5; color: #047857; border-radius: 999px; padding: 5px 9px; font-size: 11px; font-weight: 700; }
+    .mock-score-row { display: flex; align-items: center; gap: 20px; margin: 20px 0; }
+    .mock-score {
+      width: 100px; height: 100px; flex: 0 0 100px; border-radius: 50%;
+      display: grid; place-items: center;
+      border: 8px solid #fed7aa; border-right-color: var(--orange);
+      font-size: 29px; font-weight: 800; font-family: "Space Grotesk";
     }
+    .mock-score small { display: block; font-size: 11px; color: var(--muted); text-align: center; }
+    .mock-line { height: 8px; border-radius: 99px; background: #f5f5f4; margin: 11px 0; overflow: hidden; }
+    .mock-line span { display: block; height: 100%; border-radius: inherit; background: var(--orange); }
+    .mock-finding { display: flex; gap: 11px; align-items: flex-start; padding: 13px; background: #fafaf9; border: 1px solid #f0eeec; border-radius: 12px; margin-top: 10px; }
+    .mock-finding b { display: block; font-size: 13px; }
+    .mock-finding small { display: block; color: var(--muted); font-size: 11px; margin-top: 2px; }
+    .mock-icon { display: grid; place-items: center; flex: 0 0 29px; height: 29px; border-radius: 9px; background: var(--orange-light); color: #c2410c; font-weight: 800; }
 
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 18px;
-      align-items: start;
+    /* Feature cards */
+    .features { background: white; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .feature-card {
+      background: white; border: 1px solid var(--line);
+      border-radius: var(--radius); padding: 27px;
+      box-shadow: var(--shadow); transition: transform .2s, border-color .2s;
     }
+    .feature-card:hover { transform: translateY(-4px); border-color: #fdba74; }
+    .feature-icon {
+      display: grid; place-items: center; width: 48px; height: 48px;
+      background: var(--orange-light); border-radius: 14px;
+      font-size: 22px; margin-bottom: 20px;
+    }
+    .feature-card h3 { font-size: 19px; margin-bottom: 8px; }
+    .feature-card p { font-size: 14px; margin-bottom: 0; }
 
+    /* How it works */
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .step { padding: 8px 12px; }
+    .step-number {
+      display: grid; place-items: center; width: 44px; height: 44px;
+      border-radius: 14px; background: var(--orange); color: white;
+      font-family: "Space Grotesk"; font-size: 18px; font-weight: 700;
+      margin-bottom: 19px;
+    }
+    .step h3 { font-size: 19px; margin-bottom: 8px; }
+    .step p { font-size: 14px; }
+
+    /* Audit area */
+    .audit-section { background: #f5f5f4; border-top: 1px solid var(--line); }
+    .audit-layout { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 23px; align-items: start; }
     .panel {
-      min-width: 0;
-      padding: 22px;
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      background: var(--panel);
-      margin-bottom: 18px;
+      min-width: 0; background: white; border: 1px solid var(--line);
+      border-radius: var(--radius); padding: 26px; box-shadow: var(--shadow);
+      margin-bottom: 22px;
     }
-
-    label {
-      display: block;
-      margin: 15px 0 6px;
-      font-size: 13px;
-      font-weight: 700;
+    .panel h2 { font-size: 22px; letter-spacing: -.5px; margin-bottom: 8px; }
+    .muted { color: var(--muted); font-size: 13px; }
+    label.field-label { display: block; margin: 17px 0 7px; font-size: 13px; font-weight: 700; color: #44403c; }
+    input:not([type=checkbox]), textarea, select {
+      width: 100%; border: 1px solid #d6d3d1; border-radius: 11px;
+      padding: 12px 13px; background: #fafaf9; color: var(--text);
+      font-size: 14px; outline: none; transition: border .2s, box-shadow .2s;
     }
-
-    input,
-    textarea,
-    select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      background: #101012;
-      color: var(--text);
-      font: inherit;
-      font-size: 14px;
-    }
-
-    textarea {
-      min-height: 85px;
-      resize: vertical;
-    }
-
-    input:focus,
-    textarea:focus,
-    select:focus {
-      outline: 2px solid var(--orange);
-      outline-offset: 1px;
-    }
-
-    button {
-      padding: 11px 15px;
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      background: #252529;
-      color: var(--text);
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    button:hover {
-      filter: brightness(1.15);
-    }
-
-    button:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
-
-    .primary {
-      background: var(--orange);
-      color: #17100a;
-      border-color: var(--orange);
-    }
-
-    .full {
-      width: 100%;
-      margin-top: 20px;
-      padding: 14px;
-      font-size: 15px;
-    }
-
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .muted {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .status {
-      margin-top: 12px;
-      font-size: 13px;
-      overflow-wrap: anywhere;
-    }
-
-    .error {
-      color: var(--red);
-    }
-
-    .success {
-      color: var(--green);
-    }
-
-    .score-card {
-      padding: 20px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: #101012;
-      margin-bottom: 15px;
-    }
-
-    .score-number {
-      color: var(--orange);
-      font-size: 46px;
-      font-weight: 800;
-      line-height: 1.2;
-    }
-
-    .score-track {
-      height: 8px;
-      background: #333338;
-      border-radius: 20px;
-      overflow: hidden;
-      margin-top: 13px;
-    }
-
-    .score-fill {
-      width: 0;
-      height: 100%;
-      background: var(--orange);
-      transition: width 0.25s;
-    }
-
-    .checklist {
-      display: grid;
-      gap: 9px;
-    }
-
+    textarea { min-height: 76px; resize: vertical; }
+    input:focus, textarea:focus, select:focus { border-color: var(--orange); box-shadow: 0 0 0 3px #f973161c; }
+    input::placeholder, textarea::placeholder { color: #a8a29e; }
+    .full { width: 100%; margin-top: 20px; padding: 14px; }
+    .status { margin-top: 13px; font-size: 13px; overflow-wrap: anywhere; }
+    .error { color: var(--red); }
+    .success { color: var(--green); }
+    .checklist { display: grid; gap: 9px; margin-top: 18px; }
     .check-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 11px;
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      background: #111113;
-      font-size: 13px;
+      display: flex; align-items: flex-start; gap: 11px;
+      padding: 12px; border: 1px solid var(--line); border-radius: 12px;
+      background: #fff; cursor: pointer; font-size: 13px;
     }
-
-    .check-item input {
-      width: auto;
-      margin-top: 4px;
-      accent-color: var(--orange);
-    }
-
-    .check-item span {
-      flex: 1;
-    }
-
-    .finding {
-      padding: 13px;
-      margin-top: 10px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: #111113;
-    }
-
-    .finding strong {
-      display: block;
-      margin-bottom: 4px;
-    }
-
+    .check-item:hover { border-color: #fdba74; }
+    .check-item input { margin-top: 5px; accent-color: var(--orange); }
+    .check-item span { flex: 1; }
+    .score-card { padding: 20px; background: #fafaf9; border: 1px solid var(--line); border-radius: 15px; margin: 18px 0; }
+    .score-number { font-family: "Space Grotesk"; color: var(--orange-dark); font-size: 48px; font-weight: 800; line-height: 1.2; }
+    .score-track { height: 8px; background: #e7e5e4; border-radius: 99px; overflow: hidden; margin-top: 14px; }
+    .score-fill { height: 100%; width: 0; background: var(--orange); transition: width .3s; }
+    .finding { padding: 13px; margin-top: 10px; border: 1px solid var(--line); border-radius: 12px; background: #fafaf9; font-size: 13px; }
+    .finding strong { display: block; margin-bottom: 4px; }
     .priority-summary {
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-      margin: 0 0 16px;
-      padding: 15px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: #101012;
-      color: var(--text);
-      font-size: 14px;
-      font-weight: 700;
+      white-space: pre-wrap; overflow-wrap: anywhere; padding: 15px;
+      background: var(--orange-light); border: 1px solid #fed7aa;
+      border-radius: 12px; margin-bottom: 16px; font-size: 14px; font-weight: 700;
     }
+    .ai-output { font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.85; color: #44403c; }
+    .ai-output:empty::before { content: "Your AI audit will appear here."; color: var(--muted); }
+    .button-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 17px; }
+    .hidden { display: none !important; }
+    .saved-report { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+    .saved-report:last-child { border-bottom: 0; }
+    .saved-report-info { min-width: 0; overflow-wrap: anywhere; }
+    .saved-report-info strong { display: block; font-size: 14px; }
+    .saved-report-info small { color: var(--muted); font-size: 11px; }
+    .saved-report-actions { display: flex; flex-wrap: wrap; gap: 6px; flex-shrink: 0; }
 
-    .priority-summary .priority-heading {
-      color: var(--orange);
+    /* Bottom call to action and footer */
+    .cta-section { background: white; border-top: 1px solid var(--line); }
+    .cta-box {
+      padding: 48px 30px; border-radius: 24px;
+      background: #292524; color: white; text-align: center;
     }
+    .cta-box h2 { font-size: clamp(28px, 4vw, 38px); margin-bottom: 12px; }
+    .cta-box p { max-width: 560px; margin: 0 auto 24px; color: #d6d3d1; }
+    footer { background: #1c1917; color: #d6d3d1; padding: 35px 0; }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    footer p { color: #a8a29e; font-size: 12px; margin: 0; max-width: 650px; }
+    .footer-brand { font-family: "Space Grotesk"; font-weight: 700; color: white; }
 
-    .ai-output {
-      font-size: 14px;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-      color: #dedee3;
-      line-height: 1.8;
+    @media (max-width: 850px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 38px; }
+      .hero { padding: 62px 0; }
+      .hero-visual { max-width: 580px; }
+      .audit-layout { grid-template-columns: 1fr; }
+      .feature-grid { grid-template-columns: 1fr 1fr; }
     }
-
-    .ai-output:empty::before {
-      content: "Your AI audit will appear here.";
-      color: var(--muted);
+    @media (max-width: 600px) {
+      .nav-inner { min-height: 66px; }
+      .logo { font-size: 17px; }
+      .logo-icon { width: 34px; height: 34px; }
+      .nav-links { gap: 12px; }
+      .nav-links a:not(.btn) { display: none; }
+      .nav-links .btn { padding: 10px 12px; font-size: 12px; }
+      .hero h1 { letter-spacing: -1.8px; }
+      .hero-copy { font-size: 15px; }
+      .section { padding: 58px 0; }
+      .feature-grid, .steps { grid-template-columns: 1fr; }
+      .feature-card { padding: 23px; }
+      .panel { padding: 19px; }
+      .mock-window { padding: 16px; }
+      .mock-score { width: 82px; height: 82px; flex-basis: 82px; font-size: 24px; }
+      .saved-report { align-items: flex-start; flex-direction: column; }
+      .footer-inner { align-items: flex-start; flex-direction: column; }
+      .cta-box { padding: 35px 20px; }
     }
-
-    .saved-report {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .saved-report:last-child {
-      border-bottom: none;
-    }
-
-    .saved-report-info {
-      min-width: 0;
-      overflow-wrap: anywhere;
-    }
-
-    .saved-report-info strong {
-      display: block;
-    }
-
-    .saved-report-info small {
-      color: var(--muted);
-    }
-
-    .saved-report-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    footer {
-      max-width: 1050px;
-      margin: auto;
-      padding: 0 16px 30px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    @media (max-width: 760px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-
-      .panel {
-        padding: 17px;
-      }
-
-      .saved-report {
-        align-items: flex-start;
-        flex-direction: column;
-      }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; }
     }
   </style>
 </head>
-
 <body>
-  <header>
-    <div class="header-inner">
-      <div class="brand">Cart Detective</div>
-      <h1>Find what's hurting your product page.</h1>
-      <p>Audit your product page, uncover potential problems and get actionable improvements.</p>
+
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a class="logo" href="#home" aria-label="Cart Detective home">
+        <span class="logo-icon">⌕</span>
+        <span>Cart Detective</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#audit" class="btn btn-primary">Start Free Audit →</a>
+      </div>
     </div>
-  </header>
+  </nav>
 
   <main>
-    <div class="intro">
-      <p>
-        Enter your product details to get an AI-generated information-quality score and practical product-page recommendations. The score is a diagnostic, not a prediction of sales.
-      </p>
-    </div>
-
-    <div class="layout">
-      <section>
-        <div class="panel">
-          <h2>Product details</h2>
-          <p class="muted">Provide as much detail as you can for a more useful audit.</p>
-
-          <form id="productForm">
-            <label for="productName">Product name *</label>
-            <input id="productName" name="productName" required
-              placeholder="e.g. Smiling Strawberry Plush">
-
-            <label for="productUrl">Product page URL</label>
-            <input id="productUrl" name="productUrl" type="url"
-              placeholder="https://yourstore.com/products/example">
-
-            <label for="price">Price</label>
-            <input id="price" name="price" placeholder="e.g. $19.95 AUD">
-
-            <label for="description">Product description</label>
-            <textarea id="description" name="description"
-              placeholder="Paste your current product description"></textarea>
-
-            <label for="benefits">Main benefits</label>
-            <textarea id="benefits" name="benefits"
-              placeholder="What does the product do? Why would someone want it?"></textarea>
-
-            <label for="shipping">Shipping information</label>
-            <textarea id="shipping" name="shipping"
-              placeholder="Costs, delivery estimates and free-shipping conditions"></textarea>
-
-            <label for="returns">Returns and refunds</label>
-            <textarea id="returns" name="returns"
-              placeholder="Your return policy and refund conditions"></textarea>
-
-            <label for="reviews">Reviews and social proof</label>
-            <textarea id="reviews" name="reviews"
-              placeholder="Review count, customer feedback or testimonials"></textarea>
-
-            <label for="images">Product images</label>
-            <textarea id="images" name="images"
-              placeholder="Describe the images, angles, demonstrations and image quality"></textarea>
-
-            <label for="audience">Target audience</label>
-            <textarea id="audience" name="audience"
-              placeholder="Who is most likely to buy this product?"></textarea>
-
-            <button class="primary full" id="auditButton" type="submit">
-              Analyse product page
-            </button>
-
-            <div id="status" class="status" role="status" aria-live="polite"></div>
-          </form>
-        </div>
-
-        <div class="panel">
-          <h2>Page quality checklist</h2>
-          <p class="muted">
-            Use this checklist as a separate self-check. Your main score comes from the AI audit.
-          </p>
-
-          <div class="checklist" id="checklist">
-            <label class="check-item">
-              <input type="checkbox" data-points="10">
-              <span>Clear, specific product title</span>
-            </label>
-
-            <label class="check-item">
-              <input type="checkbox" data-points="10">
-              <span>High-quality product images from useful angles</span>
-            </label>
-
-            <label class="check-item">
-              <input type="checkbox" data-points="10">
-              <span>Clear explanation of product benefits</span>
-            </label>
-
-            <label class="check-item">
-              <input type="checkbox" data-points="10">
-              <span>Price is easy to find and understand</span>
-            </label>
-
-            <label class="check-item">
-              <input type="checkbox" data-points="10">
-              <span>Shipping costs and delivery estimates are clear</span>
-            </label>
-
-            <label class="check-item">
-              <input type="checkbox" data-points="10">
-              <span>Returns and refund information is easy to find</span>
-            </label>
-
-            <label class="check-item">
-              <input type="checkbox" data-points="10">
-              <span>Trust signals, such as genuine customer reviews</span>
-            </label>
-
-            <label class="check-item">
-              <input type="checkbox" data-points="10">
-              <span>Clear call-to-action and buying instructions</span>
-            </label>
-
-            <label class="check-item">
-              <input type="checkbox" data-points="10">
-              <span>Mobile-friendly layout and readable text</span>
-            </label>
-
-            <label class="check-item">
-              <input type="checkbox" data-points="10">
-              <span>No obvious spelling errors or confusing wording</span>
-            </label>
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow"><span class="dot"></span> Your product page investigator</div>
+          <h1>Find what's hurting your <span>product page.</span></h1>
+          <p class="hero-copy">Uncover unclear descriptions, missing trust signals and overlooked details. Get an AI-powered review with practical improvements you can act on.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#audit">Start Free Audit <span>→</span></a>
+            <a class="btn btn-secondary" href="#how-it-works">See how it works</a>
           </div>
+          <div class="trust-note"><strong>✓ Simple to use</strong><span>·</span><span>Actionable feedback</span><span>·</span><span>No sales guarantees</span></div>
         </div>
-      </section>
 
-      <section>
-        <div class="panel">
-          <h2>Product page score</h2>
-
-          <div class="score-card">
-            <div class="score-number"><span id="score">—</span>/100</div>
-            <div id="scoreLabel">Run an AI audit to calculate your score.</div>
-            <div class="score-track">
-              <div class="score-fill" id="scoreFill"></div>
+        <div class="hero-visual" aria-label="Illustration of a sample product page audit">
+          <div class="mock-window">
+            <div class="mock-top">
+              <div class="mock-dots"><i></i><i></i><i></i></div>
+              <span class="mock-tag">AUDIT PREVIEW</span>
             </div>
-          </div>
-
-          <div id="findings">
-            <p class="muted">Your checklist findings will appear here.</p>
-          </div>
-        </div>
-
-        <div class="panel">
-          <h2>AI audit</h2>
-          <p class="muted">
-            Your priority summary appears first, followed by the full AI audit.
-          </p>
-
-          <div id="aiResults" class="hidden">
-            <div id="prioritySummary" class="priority-summary"></div>
-            <div id="aiOutput" class="ai-output"></div>
-          </div>
-
-          <div id="aiPlaceholder" class="muted">
-            Fill in your product details and click Analyse product page.
-          </div>
-
-          <div class="button-row">
-            <button id="copyButton" type="button" disabled>Copy report</button>
-            <button id="downloadButton" type="button" disabled>Download report</button>
-            <button id="saveButton" type="button" disabled>Save report</button>
+            <div class="muted">PRODUCT PAGE INFORMATION SCORE</div>
+            <div class="mock-score-row">
+              <div class="mock-score"><div>78<small>/100</small></div></div>
+              <div style="flex:1">
+                <strong style="font-size:15px">Room to improve</strong>
+                <p style="font-size:12px;margin:5px 0 0">Example score for illustration only.</p>
+                <div class="mock-line"><span style="width:78%"></span></div>
+              </div>
+            </div>
+            <div class="mock-finding">
+              <div class="mock-icon">!</div>
+              <div><b>Clarify shipping costs</b><small>Help shoppers understand the final cost.</small></div>
+            </div>
+            <div class="mock-finding">
+              <div class="mock-icon">✓</div>
+              <div><b>Make benefits specific</b><small>Explain what makes the product useful.</small></div>
+            </div>
+            <p class="muted" style="font-size:11px;margin:15px 0 0">Illustrative preview — not a real audit result.</p>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="panel">
-          <h2>Saved reports</h2>
-          <p class="muted">Reports are saved in this browser on this device.</p>
-          <div id="savedReports">
-            <p class="muted">No saved reports yet.</p>
-          </div>
-          <button id="clearReportsButton" type="button">Delete all saved reports</button>
+    <section class="section features" id="features">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">What you get</div>
+          <h2>Turn confusing product pages into clearer experiences.</h2>
+          <p>Spot information gaps and decide what to improve first.</p>
         </div>
-      </section>
-    </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-icon">⌕</div>
+            <h3>AI-powered audit</h3>
+            <p>Review the product details you provide and receive a structured assessment with practical suggestions.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">◎</div>
+            <h3>Clear score</h3>
+            <p>See an information-quality score and a summary of potential improvements to investigate.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">↗</div>
+            <h3>Actionable feedback</h3>
+            <p>Get suggested fixes, an example rewrite and a recommended action to tackle first.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">☑</div>
+            <h3>Quality checklist</h3>
+            <p>Self-check important details like product images, pricing, shipping, returns and reviews.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">▤</div>
+            <h3>Save your reports</h3>
+            <p>Keep reports in this browser, reopen them later or delete them when they're no longer needed.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">↓</div>
+            <h3>Export and share</h3>
+            <p>Copy your audit or download a text report to keep a record of the recommendations.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how-it-works">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">Three simple steps</div>
+          <h2>From product details to a plan.</h2>
+          <p>No complicated setup. Start with the information you already have.</p>
+        </div>
+        <div class="steps">
+          <article class="step">
+            <div class="step-number">1</div>
+            <h3>Enter your details</h3>
+            <p>Add the product name, description, price, shipping details and anything else you know.</p>
+          </article>
+          <article class="step">
+            <div class="step-number">2</div>
+            <h3>Run the audit</h3>
+            <p>Send the information to the AI audit service for a structured review.</p>
+          </article>
+          <article class="step">
+            <div class="step-number">3</div>
+            <h3>Review and improve</h3>
+            <p>Read the recommendations, choose your next action and save the report if useful.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section audit-section" id="audit">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">Let's investigate</div>
+          <h2>Run your product page audit.</h2>
+          <p>Enter as much relevant information as you can. The score evaluates the information submitted, not guaranteed sales performance.</p>
+        </div>
+
+        <div class="audit-layout">
+          <div>
+            <section class="panel">
+              <h2>Product details</h2>
+              <p class="muted">Fields marked with * are required.</p>
+              <form id="productForm">
+                <label class="field-label" for="productName">Product name *</label>
+                <input id="productName" name="productName" required placeholder="e.g. Smiling Strawberry Plush">
+
+                <label class="field-label" for="productUrl">Product page URL</label>
+                <input id="productUrl" name="productUrl" type="url" placeholder="https://yourstore.com/products/example">
+
+                <label class="field-label" for="price">Price</label>
+                <input id="price" name="price" placeholder="e.g. $19.95 AUD">
+
+                <label class="field-label" for="description">Product description</label>
+                <textarea id="description" name="description" placeholder="Paste your current product description"></textarea>
+
+                <label class="field-label" for="benefits">Main benefits</label>
+                <textarea id="benefits" name="benefits" placeholder="What does the product do? Why would someone want it?"></textarea>
+
+                <label class="field-label" for="shipping">Shipping information</label>
+                <textarea id="shipping" name="shipping" placeholder="Costs, delivery estimates and free-shipping conditions"></textarea>
+
+                <label class="field-label" for="returns">Returns and refunds</label>
+                <textarea id="returns" name="returns" placeholder="Your return policy and refund conditions"></textarea>
+
+                <label class="field-label" for="reviews">Reviews and social proof</label>
+                <textarea id="reviews" name="reviews" placeholder="Review count, customer feedback or testimonials"></textarea>
+
+                <label class="field-label" for="images">Product images</label>
+                <textarea id="images" name="images" placeholder="Describe the images, angles, demonstrations and image quality"></textarea>
+
+                <label class="field-label" for="audience">Target audience</label>
+                <textarea id="audience" name="audience" placeholder="Who is most likely to buy this product?"></textarea>
+
+                <button class="btn btn-primary full" id="auditButton" type="submit">Analyse product page →</button>
+                <div id="status" class="status" role="status" aria-live="polite"></div>
+              </form>
+            </section>
+
+            <section class="panel">
+              <h2>Page quality checklist</h2>
+              <p class="muted">Mark each item that your product page already covers. This self-check is separate from the AI score.</p>
+              <div class="checklist" id="checklist">
+                <label class="check-item"><input type="checkbox" data-points="10"><span>Clear, specific product title</span></label>
+                <label class="check-item"><input type="checkbox" data-points="10"><span>High-quality product images from useful angles</span></label>
+                <label class="check-item"><input type="checkbox" data-points="10"><span>Clear explanation of product benefits</span></label>
+                <label class="check-item"><input type="checkbox" data-points="10"><span>Price is easy to find and understand</span></label>
+                <label class="check-item"><input type="checkbox" data-points="10"><span>Shipping costs and delivery estimates are clear</span></label>
+                <label class="check-item"><input type="checkbox" data-points="10"><span>Returns and refund information is easy to find</span></label>
+                <label class="check-item"><input type="checkbox" data-points="10"><span>Trust signals, such as genuine customer reviews</span></label>
+                <label class="check-item"><input type="checkbox" data-points="10"><span>Clear call-to-action and buying instructions</span></label>
+                <label class="check-item"><input type="checkbox" data-points="10"><span>Mobile-friendly layout and readable text</span></label>
+                <label class="check-item"><input type="checkbox" data-points="10"><span>No obvious spelling errors or confusing wording</span></label>
+              </div>
+            </section>
+          </div>
+
+          <div>
+            <section class="panel">
+              <h2>Product page score</h2>
+              <div class="score-card">
+                <div class="score-number"><span id="score">—</span><span style="font-size:18px;color:#78716c"> /100</span></div>
+                <div id="scoreLabel" class="muted">Run an AI audit to calculate your score.</div>
+                <div class="score-track"><div class="score-fill" id="scoreFill"></div></div>
+              </div>
+              <div id="findings"><p class="muted">Your checklist findings will appear here.</p></div>
+            </section>
+
+            <section class="panel">
+              <h2>AI audit report</h2>
+              <p class="muted">Your priority summary and full report will appear here after the audit.</p>
+              <div id="aiResults" class="hidden">
+                <div id="prioritySummary" class="priority-summary"></div>
+                <div id="aiOutput" class="ai-output"></div>
+              </div>
+              <div id="aiPlaceholder" class="muted">Fill in your product details and click Analyse product page.</div>
+              <div class="button-row">
+                <button class="btn btn-secondary" id="copyButton" type="button" disabled>Copy report</button>
+                <button class="btn btn-secondary" id="downloadButton" type="button" disabled>Download .txt</button>
+                <button class="btn btn-primary" id="saveButton" type="button" disabled>Save report</button>
+              </div>
+            </section>
+
+            <section class="panel">
+              <h2>Saved reports</h2>
+              <p class="muted">Reports are saved locally in this browser on this device.</p>
+              <div id="savedReports"><p class="muted">No saved reports yet.</p></div>
+              <button class="btn btn-secondary btn-small" id="clearReportsButton" type="button">Delete all saved reports</button>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cta-section">
+      <div class="container">
+        <div class="cta-box">
+          <h2>Ready to investigate your product page?</h2>
+          <p>Start with what you know, review the findings and use the recommendations to decide what to improve next.</p>
+          <a href="#audit" class="btn btn-primary">Start Free Audit →</a>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer>
-    Cart Detective provides general product-page feedback. It cannot guarantee sales,
-    conversions or business results. Always verify product claims and policies.
+    <div class="container footer-inner">
+      <a href="#home" class="logo"><span class="logo-icon">⌕</span><span class="footer-brand">Cart Detective</span></a>
+      <p>Cart Detective provides general product-page feedback. It cannot guarantee sales, conversions or business results. Always verify product claims and policies.</p>
+      <p>© <span id="year"></span> Cart Detective</p>
+    </div>
   </footer>
 
   <script>
-"use strict";
+    "use strict";
 
-const API_URL = "https://cart-detective-api.ceemacdee.workers.dev/";
-const STORAGE_KEY = "cartDetectiveReports";
-const MAX_SAVED_REPORTS = 50;
-const $ = (id) => document.getElementById(id);
+    // Keep the existing Cloudflare Worker endpoint.
+    const API_URL = "https://cart-detective-api.ceemacdee.workers.dev/";
+    const STORAGE_KEY = "cartDetectiveReports";
+    const MAX_SAVED_REPORTS = 50;
+    const $ = id => document.getElementById(id);
 
-let currentReport = null;
-let isAuditing = false;
+    let currentReport = null;
+    let isAuditing = false;
 
-function getFormData() {
-  const fields = ["productName", "productUrl", "price", "description", "benefits", "shipping", "returns", "reviews", "images", "audience"];
-  const data = {};
-  for (const field of fields) data[field] = $(field).value.trim();
-  return data;
-}
+    $("year").textContent = new Date().getFullYear();
 
-function getChecklistFindings() {
-  return [...document.querySelectorAll("#checklist input[type='checkbox']")].map(box => ({
-    text: box.parentElement.querySelector("span").textContent.trim(),
-    completed: box.checked
-  }));
-}
-
-function updateChecklistFindings() {
-  const findings = getChecklistFindings();
-  const missing = findings.filter(item => !item.completed);
-  const completed = findings.filter(item => item.completed);
-  $("findings").replaceChildren();
-  const summary = document.createElement("p");
-  summary.className = "muted";
-  summary.textContent = `${completed.length} of ${findings.length} checklist items marked complete. This checklist does not determine the AI score.`;
-  $("findings").appendChild(summary);
-  if (missing.length) {
-    const heading = document.createElement("h3");
-    heading.textContent = "Items to review";
-    $("findings").appendChild(heading);
-    for (const item of missing) {
-      const div = document.createElement("div");
-      div.className = "finding";
-      const strong = document.createElement("strong");
-      strong.textContent = "Needs checking";
-      const text = document.createElement("div");
-      text.textContent = item.text;
-      div.append(strong, text);
-      $("findings").appendChild(div);
-    }
-  } else {
-    const done = document.createElement("div");
-    done.className = "finding";
-    done.textContent = "All checklist items are marked complete.";
-    $("findings").appendChild(done);
-  }
-}
-
-function showScore(score) {
-  const valid = Number.isInteger(score) && score >= 0 && score <= 100;
-  $("score").textContent = valid ? String(score) : "—";
-  $("scoreFill").style.width = (valid ? score : 0) + "%";
-  if (!valid) $("scoreLabel").textContent = "Run an AI audit to calculate your score.";
-  else if (score >= 80) $("scoreLabel").textContent = "Strong information quality";
-  else if (score >= 60) $("scoreLabel").textContent = "Some improvements could make this clearer";
-  else if (score >= 40) $("scoreLabel").textContent = "Several important areas need attention";
-  else $("scoreLabel").textContent = "The supplied information needs substantial improvement";
-}
-
-function getPriorityCounts(report) {
-  const counts = { high: 0, medium: 0, low: 0 };
-  for (const item of (Array.isArray(report?.improvements) ? report.improvements : [])) {
-    const priority = String(item?.priority || "").toLowerCase();
-    if (priority === "high") counts.high++;
-    else if (priority === "medium") counts.medium++;
-    else if (priority === "low") counts.low++;
-  }
-  return counts;
-}
-
-function renderPrioritySummary(report) {
-  const counts = getPriorityCounts(report);
-  $("prioritySummary").textContent = `PRIORITY SUMMARY\n🔴 High: ${counts.high}\n🟠 Medium: ${counts.medium}\n🟢 Low: ${counts.low}`;
-}
-
-function formatAiReport(report) {
-  const strengths = Array.isArray(report.strengths) ? report.strengths : [];
-  const improvements = Array.isArray(report.improvements) ? report.improvements : [];
-  return [
-    "OVERALL ASSESSMENT", report.assessment || "No assessment provided.", "",
-    "STRENGTHS", ...(strengths.length ? strengths.map(x => "• " + x) : ["• No clear strengths confirmed."]), "",
-    "PRIORITY IMPROVEMENTS",
-    ...(improvements.length ? improvements.map((item, i) =>
-      `${i + 1}. [${String(item.priority || "Low").toUpperCase()}] ${item.title}\nReason: ${item.reason}\nSuggested fix: ${item.suggestion}\nEstimated score impact: ${item.pointsDeducted} points`
-    ) : ["No major improvements were identified from the supplied information."]), "",
-    "EXAMPLE REWRITE", report.exampleRewrite || "More product details are needed to create a rewrite.", "",
-    "ACTION TO TAKE TODAY", report.actionToday || "Review the highest-priority recommendation first.", "",
-    "Note: This score evaluates only the information submitted. It does not predict sales or verify the live store."
-  ].join("\n");
-}
-
-function showAiAudit(report, auditText) {
-  $("aiResults").classList.remove("hidden");
-  $("aiPlaceholder").classList.add("hidden");
-  renderPrioritySummary(report);
-  $("aiOutput").textContent = auditText;
-  showScore(report.score);
-  $("copyButton").disabled = false;
-  $("downloadButton").disabled = false;
-  $("saveButton").disabled = false;
-}
-
-function setStatus(message, type = "") {
-  $("status").textContent = message;
-  $("status").className = "status" + (type ? " " + type : "");
-}
-
-async function requestAiAudit(product) {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 60000);
-  try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(product),
-      signal: controller.signal
-    });
-    const rawText = await response.text();
-    let payload;
-    try { payload = JSON.parse(rawText); }
-    catch { throw new Error("The API returned an invalid response. Check your Cloudflare Worker."); }
-    if (!response.ok || payload.error) throw new Error(payload.error || payload.message || `AI request failed (HTTP ${response.status}).`);
-
-    if (payload.report && Number.isInteger(payload.report.score)) {
-      return { report: payload.report, audit: typeof payload.audit === "string" && payload.audit.trim() ? payload.audit : formatAiReport(payload.report) };
+    function getFormData() {
+      const fields = [
+        "productName", "productUrl", "price", "description", "benefits",
+        "shipping", "returns", "reviews", "images", "audience"
+      ];
+      const data = {};
+      for (const field of fields) data[field] = $(field).value.trim();
+      return data;
     }
 
-    // Compatibility fallback for an older Worker response.
-    if (typeof payload.audit === "string" && payload.audit.trim()) {
-      const match = payload.audit.match(/AI INFORMATION QUALITY SCORE:\s*(\d{1,3})\/100/i);
-      if (match) return {
-        report: { score: Number(match[1]), assessment: payload.audit, strengths: [], improvements: [], exampleRewrite: "", actionToday: "" },
-        audit: payload.audit
+    function getChecklistFindings() {
+      return [...document.querySelectorAll("#checklist input[type='checkbox']")].map(box => ({
+        text: box.parentElement.querySelector("span").textContent.trim(),
+        completed: box.checked
+      }));
+    }
+
+    function updateChecklistFindings() {
+      const findings = getChecklistFindings();
+      const missing = findings.filter(item => !item.completed);
+      const completed = findings.filter(item => item.completed);
+      const container = $("findings");
+      container.replaceChildren();
+
+      const summary = document.createElement("p");
+      summary.className = "muted";
+      summary.textContent = `${completed.length} of ${findings.length} checklist items marked complete. This checklist does not determine the AI score.`;
+      container.appendChild(summary);
+
+      if (missing.length) {
+        const heading = document.createElement("h3");
+        heading.textContent = "Items to review";
+        container.appendChild(heading);
+
+        for (const item of missing) {
+          const div = document.createElement("div");
+          div.className = "finding";
+          const strong = document.createElement("strong");
+          strong.textContent = "Needs checking";
+          const text = document.createElement("div");
+          text.textContent = item.text;
+          div.append(strong, text);
+          container.appendChild(div);
+        }
+      } else {
+        const done = document.createElement("div");
+        done.className = "finding";
+        done.textContent = "All checklist items are marked complete.";
+        container.appendChild(done);
+      }
+    }
+
+    function showScore(score) {
+      const valid = Number.isInteger(score) && score >= 0 && score <= 100;
+      $("score").textContent = valid ? String(score) : "—";
+      $("scoreFill").style.width = (valid ? score : 0) + "%";
+
+      if (!valid) $("scoreLabel").textContent = "Run an AI audit to calculate your score.";
+      else if (score >= 80) $("scoreLabel").textContent = "Strong information quality";
+      else if (score >= 60) $("scoreLabel").textContent = "Some improvements could make this clearer";
+      else if (score >= 40) $("scoreLabel").textContent = "Several important areas need attention";
+      else $("scoreLabel").textContent = "The supplied information needs substantial improvement";
+    }
+
+    function getPriorityCounts(report) {
+      const counts = { high: 0, medium: 0, low: 0 };
+      for (const item of (Array.isArray(report?.improvements) ? report.improvements : [])) {
+        const priority = String(item?.priority || "").toLowerCase();
+        if (priority === "high") counts.high++;
+        else if (priority === "medium") counts.medium++;
+        else if (priority === "low") counts.low++;
+      }
+      return counts;
+    }
+
+    function renderPrioritySummary(report) {
+      const counts = getPriorityCounts(report);
+      $("prioritySummary").textContent =
+        `PRIORITY SUMMARY\n🔴 High: ${counts.high}\n🟠 Medium: ${counts.medium}\n🟢 Low: ${counts.low}`;
+    }
+
+    function formatAiReport(report) {
+      const strengths = Array.isArray(report.strengths) ? report.strengths : [];
+      const improvements = Array.isArray(report.improvements) ? report.improvements : [];
+
+      return [
+        "OVERALL ASSESSMENT", report.assessment || "No assessment provided.", "",
+        "STRENGTHS", ...(strengths.length ? strengths.map(x => "• " + x) : ["• No clear strengths confirmed."]), "",
+        "PRIORITY IMPROVEMENTS",
+        ...(improvements.length ? improvements.map((item, i) =>
+          `${i + 1}. [${String(item.priority || "Low").toUpperCase()}] ${item.title}\nReason: ${item.reason}\nSuggested fix: ${item.suggestion}\nEstimated score impact: ${item.pointsDeducted} points`
+        ) : ["No major improvements were identified from the supplied information."]), "",
+        "EXAMPLE REWRITE", report.exampleRewrite || "More product details are needed to create a rewrite.", "",
+        "ACTION TO TAKE TODAY", report.actionToday || "Review the highest-priority recommendation first.", "",
+        "Note: This score evaluates only the information submitted. It does not predict sales or verify the live store."
+      ].join("\n");
+    }
+
+    function showAiAudit(report, auditText) {
+      $("aiResults").classList.remove("hidden");
+      $("aiPlaceholder").classList.add("hidden");
+      renderPrioritySummary(report);
+      $("aiOutput").textContent = auditText;
+      showScore(report.score);
+      $("copyButton").disabled = false;
+      $("downloadButton").disabled = false;
+      $("saveButton").disabled = false;
+    }
+
+    function setStatus(message, type = "") {
+      $("status").textContent = message;
+      $("status").className = "status" + (type ? " " + type : "");
+    }
+
+    async function requestAiAudit(product) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000);
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(product),
+          signal: controller.signal
+        });
+
+        const rawText = await response.text();
+        let payload;
+
+        try {
+          payload = JSON.parse(rawText);
+        } catch {
+          throw new Error("The API returned an invalid response. Check your Cloudflare Worker.");
+        }
+
+        if (!response.ok || payload.error) {
+          throw new Error(payload.error || payload.message || `AI request failed (HTTP ${response.status}).`);
+        }
+
+        if (payload.report && Number.isInteger(payload.report.score)) {
+          return {
+            report: payload.report,
+            audit: typeof payload.audit === "string" && payload.audit.trim()
+              ? payload.audit : formatAiReport(payload.report)
+          };
+        }
+
+        // Compatibility with an older Worker response.
+        if (typeof payload.audit === "string" && payload.audit.trim()) {
+          const match = payload.audit.match(/AI INFORMATION QUALITY SCORE:\s*(\d{1,3})\/100/i);
+          if (match) {
+            return {
+              report: {
+                score: Number(match[1]), assessment: payload.audit,
+                strengths: [], improvements: [], exampleRewrite: "", actionToday: ""
+              },
+              audit: payload.audit
+            };
+          }
+        }
+
+        throw new Error("The API response did not contain a usable AI score and structured report. Check that your updated Worker is deployed.");
+      } catch (error) {
+        if (error.name === "AbortError") throw new Error("The AI request timed out. Please try again.");
+        if (error instanceof TypeError) throw new Error("Could not connect to the API. Check the Worker URL and CORS settings.");
+        throw error;
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    }
+
+    function buildReportText(report) {
+      const product = report.product || {};
+      const counts = getPriorityCounts(report.aiReport || {});
+
+      return [
+        "CART DETECTIVE — PRODUCT PAGE AUDIT", "===================================", "",
+        "Product: " + (product.productName || ""),
+        "URL: " + (product.productUrl || "Not provided"),
+        "Price: " + (product.price || "Not provided"),
+        "AI information quality score: " + (Number.isInteger(report.score) ? report.score : "Not available") + "/100", "",
+        "PRIORITY SUMMARY", `🔴 High: ${counts.high}`, `🟠 Medium: ${counts.medium}`, `🟢 Low: ${counts.low}`, "",
+        "AI AUDIT", "--------", report.aiAudit || "No AI audit has been generated.", "",
+        "CHECKLIST SELF-CHECK", "--------------------",
+        (report.checklist || []).map(item => (item.completed ? "[x] " : "[ ] ") + item.text).join("\n"), "",
+        "PRODUCT DETAILS", "---------------",
+        "Description: " + (product.description || "Not provided"),
+        "Benefits: " + (product.benefits || "Not provided"),
+        "Shipping: " + (product.shipping || "Not provided"),
+        "Returns: " + (product.returns || "Not provided"),
+        "Reviews: " + (product.reviews || "Not provided"),
+        "Images: " + (product.images || "Not provided"),
+        "Audience: " + (product.audience || "Not provided")
+      ].join("\n");
+    }
+
+    function getSavedReports() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        return Array.isArray(saved) ? saved : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function setSavedReports(reports) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(reports.slice(0, MAX_SAVED_REPORTS)));
+    }
+
+    function renderSavedReports() {
+      const reports = getSavedReports();
+      const container = $("savedReports");
+      container.replaceChildren();
+
+      if (!reports.length) {
+        const message = document.createElement("p");
+        message.className = "muted";
+        message.textContent = "No saved reports yet.";
+        container.appendChild(message);
+        return;
+      }
+
+      for (const report of reports) {
+        const row = document.createElement("div");
+        row.className = "saved-report";
+
+        const info = document.createElement("div");
+        info.className = "saved-report-info";
+
+        const name = document.createElement("strong");
+        name.textContent = report.product?.productName || "Untitled product";
+
+        const date = document.createElement("small");
+        date.textContent = new Date(report.createdAt).toLocaleString() +
+          " · AI score " + (report.score ?? "—") + "/100";
+
+        info.append(name, date);
+
+        const actions = document.createElement("div");
+        actions.className = "saved-report-actions";
+
+        const openButton = document.createElement("button");
+        openButton.className = "btn btn-secondary btn-small";
+        openButton.textContent = "Open";
+        openButton.type = "button";
+        openButton.addEventListener("click", () => loadSavedReport(report.id));
+
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "btn btn-secondary btn-small";
+        deleteButton.textContent = "Delete";
+        deleteButton.type = "button";
+        deleteButton.addEventListener("click", () => deleteSavedReport(report.id));
+
+        actions.append(openButton, deleteButton);
+        row.append(info, actions);
+        container.appendChild(row);
+      }
+    }
+
+    function saveCurrentReport() {
+      if (!currentReport?.aiAudit) return;
+
+      try {
+        const reports = getSavedReports();
+        reports.unshift({
+          ...currentReport,
+          id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2),
+          createdAt: new Date().toISOString()
+        });
+        setSavedReports(reports);
+        renderSavedReports();
+        setStatus("Report saved in this browser.", "success");
+      } catch {
+        setStatus("Could not save the report. Browser storage may be unavailable or full.", "error");
+      }
+    }
+
+    function loadSavedReport(id) {
+      const report = getSavedReports().find(item => item.id === id);
+      if (!report) {
+        setStatus("That saved report could not be found.", "error");
+        return;
+      }
+
+      currentReport = report;
+
+      for (const [key, value] of Object.entries(report.product || {})) {
+        const field = $(key);
+        if (field) field.value = value || "";
+      }
+
+      const boxes = [...document.querySelectorAll("#checklist input[type='checkbox']")];
+      (report.checklist || []).forEach((item, index) => {
+        if (boxes[index]) boxes[index].checked = Boolean(item.completed);
+      });
+
+      updateChecklistFindings();
+
+      if (report.aiReport) {
+        showAiAudit(report.aiReport, report.aiAudit || formatAiReport(report.aiReport));
+      } else {
+        $("aiResults").classList.remove("hidden");
+        $("aiPlaceholder").classList.add("hidden");
+        $("prioritySummary").textContent = "PRIORITY SUMMARY\n🔴 High: 0\n🟠 Medium: 0\n🟢 Low: 0";
+        $("aiOutput").textContent = report.aiAudit || "No AI audit was saved.";
+        showScore(Number.isInteger(report.score) ? report.score : null);
+        $("copyButton").disabled = false;
+        $("downloadButton").disabled = false;
+        $("saveButton").disabled = false;
+      }
+
+      setStatus("Saved report opened.", "success");
+      $("audit").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function deleteSavedReport(id) {
+      try {
+        setSavedReports(getSavedReports().filter(item => item.id !== id));
+        renderSavedReports();
+        setStatus("Saved report deleted.", "success");
+      } catch {
+        setStatus("Could not delete the saved report.", "error");
+      }
+    }
+
+    async function copyReport() {
+      if (!currentReport) return;
+
+      try {
+        await navigator.clipboard.writeText(buildReportText(currentReport));
+        setStatus("Report copied to clipboard.", "success");
+      } catch {
+        setStatus("Copy failed. Your browser may require a secure connection.", "error");
+      }
+    }
+
+    function downloadReport() {
+      if (!currentReport) return;
+
+      const blob = new Blob([buildReportText(currentReport)], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+
+      const safeName = (currentReport.product?.productName || "product-audit")
+        .replace(/[^a-z0-9-_]+/gi, "-").replace(/^-+|-+$/g, "").toLowerCase();
+
+      link.download = (safeName || "product-audit") + ".txt";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setStatus("Report downloaded.", "success");
+    }
+
+    async function runAiAudit(event) {
+      event.preventDefault();
+      if (isAuditing) return;
+
+      const product = getFormData();
+      if (!product.productName) {
+        setStatus("Please enter a product name.", "error");
+        $("productName").focus();
+        return;
+      }
+
+      isAuditing = true;
+      $("auditButton").disabled = true;
+      $("auditButton").textContent = "Analysing...";
+      $("copyButton").disabled = true;
+      $("downloadButton").disabled = true;
+      $("saveButton").disabled = true;
+      $("aiResults").classList.add("hidden");
+      $("aiPlaceholder").classList.remove("hidden");
+      showScore(null);
+      setStatus("Analysing your product information with AI. This may take a moment.");
+
+      const report = {
+        product,
+        score: null,
+        checklist: getChecklistFindings(),
+        aiAudit: "",
+        aiReport: null,
+        createdAt: new Date().toISOString()
       };
+
+      try {
+        const result = await requestAiAudit(product);
+        report.score = result.report.score;
+        report.aiReport = result.report;
+        report.aiAudit = result.audit;
+        currentReport = report;
+        showAiAudit(result.report, result.audit);
+        setStatus("AI audit completed successfully.", "success");
+      } catch (error) {
+        console.error("Cart Detective audit error:", error);
+        setStatus(error.message || "Something went wrong. Please try again.", "error");
+      } finally {
+        isAuditing = false;
+        $("auditButton").disabled = false;
+        $("auditButton").textContent = "Analyse product page →";
+      }
     }
-    throw new Error("The API response did not contain a usable AI score and structured report. Make sure the updated Worker is deployed.");
-  } catch (error) {
-    if (error.name === "AbortError") throw new Error("The AI request timed out. Please try again.");
-    if (error instanceof TypeError) throw new Error("Could not connect to the API. Check the Worker URL and CORS settings.");
-    throw error;
-  } finally { clearTimeout(timeoutId); }
-}
 
-function buildReportText(report) {
-  const product = report.product || {};
-  const counts = getPriorityCounts(report.aiReport || {});
-  return [
-    "CART DETECTIVE — PRODUCT PAGE AUDIT", "===================================", "",
-    "Product: " + (product.productName || ""),
-    "URL: " + (product.productUrl || "Not provided"),
-    "Price: " + (product.price || "Not provided"),
-    "AI information quality score: " + (Number.isInteger(report.score) ? report.score : "Not available") + "/100", "",
-    "PRIORITY SUMMARY", `🔴 High: ${counts.high}`, `🟠 Medium: ${counts.medium}`, `🟢 Low: ${counts.low}`, "",
-    "AI AUDIT", "--------", report.aiAudit || "No AI audit has been generated.", "",
-    "CHECKLIST SELF-CHECK", "--------------------",
-    (report.checklist || []).map(item => (item.completed ? "[x] " : "[ ] ") + item.text).join("\n"), "",
-    "PRODUCT DETAILS", "---------------",
-    "Description: " + (product.description || "Not provided"),
-    "Benefits: " + (product.benefits || "Not provided"),
-    "Shipping: " + (product.shipping || "Not provided"),
-    "Returns: " + (product.returns || "Not provided"),
-    "Reviews: " + (product.reviews || "Not provided"),
-    "Images: " + (product.images || "Not provided"),
-    "Audience: " + (product.audience || "Not provided")
-  ].join("\n");
-}
+    $("productForm").addEventListener("submit", runAiAudit);
+    document.querySelectorAll("#checklist input").forEach(box =>
+      box.addEventListener("change", updateChecklistFindings)
+    );
+    $("copyButton").addEventListener("click", copyReport);
+    $("downloadButton").addEventListener("click", downloadReport);
+    $("saveButton").addEventListener("click", saveCurrentReport);
 
-function getSavedReports() {
-  try { const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); return Array.isArray(saved) ? saved : []; }
-  catch { return []; }
-}
-function setSavedReports(reports) { localStorage.setItem(STORAGE_KEY, JSON.stringify(reports.slice(0, MAX_SAVED_REPORTS))); }
+    $("clearReportsButton").addEventListener("click", () => {
+      const reports = getSavedReports();
+      if (!reports.length) {
+        setStatus("There are no saved reports to delete.");
+        return;
+      }
+      if (!confirm("Delete all saved reports from this browser?")) return;
 
-function renderSavedReports() {
-  const reports = getSavedReports();
-  const container = $("savedReports");
-  container.replaceChildren();
-  if (!reports.length) {
-    const message = document.createElement("p"); message.className = "muted"; message.textContent = "No saved reports yet."; container.appendChild(message); return;
-  }
-  for (const report of reports) {
-    const row = document.createElement("div"); row.className = "saved-report";
-    const info = document.createElement("div"); info.className = "saved-report-info";
-    const name = document.createElement("strong"); name.textContent = report.product?.productName || "Untitled product";
-    const date = document.createElement("small"); date.textContent = new Date(report.createdAt).toLocaleString() + " · AI score " + (report.score ?? "—") + "/100";
-    info.append(name, date);
-    const actions = document.createElement("div"); actions.className = "saved-report-actions";
-    const openButton = document.createElement("button"); openButton.textContent = "Open"; openButton.type = "button"; openButton.addEventListener("click", () => loadSavedReport(report.id));
-    const deleteButton = document.createElement("button"); deleteButton.textContent = "Delete"; deleteButton.type = "button"; deleteButton.addEventListener("click", () => deleteSavedReport(report.id));
-    actions.append(openButton, deleteButton); row.append(info, actions); container.appendChild(row);
-  }
-}
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+        renderSavedReports();
+        setStatus("All saved reports deleted.", "success");
+      } catch {
+        setStatus("Could not delete the saved reports.", "error");
+      }
+    });
 
-function saveCurrentReport() {
-  if (!currentReport?.aiAudit) return;
-  const reports = getSavedReports();
-  reports.unshift({ ...currentReport, id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2), createdAt: new Date().toISOString() });
-  setSavedReports(reports); renderSavedReports(); setStatus("Report saved in this browser.", "success");
-}
-
-function loadSavedReport(id) {
-  const report = getSavedReports().find(item => item.id === id);
-  if (!report) { setStatus("That saved report could not be found.", "error"); return; }
-  currentReport = report;
-  for (const [key, value] of Object.entries(report.product || {})) { const field = $(key); if (field) field.value = value || ""; }
-  const boxes = [...document.querySelectorAll("#checklist input[type='checkbox']")];
-  (report.checklist || []).forEach((item, index) => { if (boxes[index]) boxes[index].checked = Boolean(item.completed); });
-  updateChecklistFindings();
-  if (report.aiReport) showAiAudit(report.aiReport, report.aiAudit || formatAiReport(report.aiReport));
-  else {
-    $("aiResults").classList.remove("hidden"); $("aiPlaceholder").classList.add("hidden");
-    $("prioritySummary").textContent = "PRIORITY SUMMARY\n🔴 High: 0\n🟠 Medium: 0\n🟢 Low: 0";
-    $("aiOutput").textContent = report.aiAudit || "No AI audit was saved."; showScore(Number.isInteger(report.score) ? report.score : null);
-    $("copyButton").disabled = false; $("downloadButton").disabled = false; $("saveButton").disabled = false;
-  }
-  setStatus("Saved report opened.", "success"); window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-function deleteSavedReport(id) { setSavedReports(getSavedReports().filter(item => item.id !== id)); renderSavedReports(); setStatus("Saved report deleted.", "success"); }
-
-async function copyReport() {
-  if (!currentReport) return;
-  try { await navigator.clipboard.writeText(buildReportText(currentReport)); setStatus("Report copied to clipboard.", "success"); }
-  catch { setStatus("Copy failed. Your browser may require a secure connection.", "error"); }
-}
-
-function downloadReport() {
-  if (!currentReport) return;
-  const blob = new Blob([buildReportText(currentReport)], { type: "text/plain;charset=utf-8" });
-  const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.href = url;
-  const safeName = (currentReport.product?.productName || "product-audit").replace(/[^a-z0-9-_]+/gi, "-").replace(/^-+|-+$/g, "").toLowerCase();
-  link.download = (safeName || "product-audit") + ".txt"; document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url); setStatus("Report downloaded.", "success");
-}
-
-async function runAiAudit(event) {
-  event.preventDefault();
-  if (isAuditing) return;
-  const product = getFormData();
-  if (!product.productName) { setStatus("Please enter a product name.", "error"); $("productName").focus(); return; }
-
-  isAuditing = true; $("auditButton").disabled = true; $("auditButton").textContent = "Analysing...";
-  $("copyButton").disabled = true; $("downloadButton").disabled = true; $("saveButton").disabled = true;
-  $("aiResults").classList.add("hidden"); $("aiPlaceholder").classList.remove("hidden"); showScore(null);
-  setStatus("Analysing your product information with AI. This may take a moment.");
-  const report = { product, score: null, checklist: getChecklistFindings(), aiAudit: "", aiReport: null, createdAt: new Date().toISOString() };
-
-  try {
-    const result = await requestAiAudit(product);
-    report.score = result.report.score; report.aiReport = result.report; report.aiAudit = result.audit; currentReport = report;
-    showAiAudit(result.report, result.audit); setStatus("AI audit completed successfully.", "success");
-  } catch (error) {
-    console.error("Cart Detective audit error:", error);
-    setStatus(error.message || "Something went wrong. Please try again.", "error");
-  } finally {
-    isAuditing = false; $("auditButton").disabled = false; $("auditButton").textContent = "Analyse product page";
-  }
-}
-
-$("productForm").addEventListener("submit", runAiAudit);
-document.querySelectorAll("#checklist input").forEach(box => box.addEventListener("change", updateChecklistFindings));
-$("copyButton").addEventListener("click", copyReport);
-$("downloadButton").addEventListener("click", downloadReport);
-$("saveButton").addEventListener("click", saveCurrentReport);
-$("clearReportsButton").addEventListener("click", () => {
-  const reports = getSavedReports();
-  if (!reports.length) { setStatus("There are no saved reports to delete."); return; }
-  if (!confirm("Delete all saved reports from this browser?")) return;
-  localStorage.removeItem(STORAGE_KEY); renderSavedReports(); setStatus("All saved reports deleted.", "success");
-});
-
-// No score or loading state is shown until the first audit finishes/starts.
-showScore(null);
-updateChecklistFindings();
-renderSavedReports();
-</script>
+    showScore(null);
+    updateChecklistFindings();
+    renderSavedReports();
+  </script>
 </body>
 </html>
