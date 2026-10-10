@@ -1,0 +1,19 @@
+
+{
+  "name": "Cart Detective",
+  "short_name": "Cart Detective",
+  "description": "Find ways to improve your ecommerce product pages.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b1120",
+  "theme_color": "#0b1120",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
