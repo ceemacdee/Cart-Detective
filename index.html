@@ -1,0 +1,556 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10131d">
+<meta name="description" content="Find and fix problems on your ecommerce product pages with Cart Detective.">
+<title>Cart Detective — Product Page Auditor</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #10131d;
+  --panel: #191e2b;
+  --panel2: #202637;
+  --text: #f4f6fc;
+  --muted: #a3adc2;
+  --orange: #ffad66;
+  --line: #30394d;
+  --green: #6ee7b7;
+  --red: #ff8f8f;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.55 system-ui, -apple-system, sans-serif;
+}
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible,
+textarea:focus-visible, select:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+}
+header {
+  padding: 18px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.brand { font-size: 19px; font-weight: 800; letter-spacing: -.5px; }
+.brand span { color: var(--orange); }
+.tag {
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  padding: 5px 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+main { width: min(1050px, 92%); margin: 36px auto 70px; }
+.hero { margin-bottom: 28px; }
+.eyebrow {
+  color: var(--orange);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 11px;
+  font-weight: 800;
+}
+h1 { font-size: clamp(30px, 5vw, 46px); line-height: 1.1; margin: 10px 0; }
+h2 { font-size: 20px; margin: 0 0 8px; }
+h3 { font-size: 16px; margin: 0 0 6px; }
+p { color: var(--muted); }
+.hero p { max-width: 620px; margin-bottom: 0; }
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 22px;
+  min-width: 0;
+}
+.sub { font-size: 13px; margin-top: 0; }
+label { display: block; margin: 15px 0 6px; font-size: 13px; font-weight: 650; }
+input, textarea, select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #111622;
+  color: var(--text);
+  padding: 11px 12px;
+}
+textarea { min-height: 95px; resize: vertical; }
+input::placeholder, textarea::placeholder { color: #778198; }
+button {
+  border: 0;
+  border-radius: 9px;
+  padding: 11px 14px;
+  font-weight: 750;
+}
+.primary { background: var(--orange); color: #21160e; }
+.secondary { background: var(--panel2); color: var(--text); border: 1px solid var(--line); }
+.actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 18px; }
+.actions button { flex: 1; }
+.full { width: 100%; margin-top: 18px; }
+.empty {
+  min-height: 330px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.empty .emoji { font-size: 42px; }
+.empty p { max-width: 300px; }
+.hidden { display: none !important; }
+.score-row { display: flex; align-items: center; gap: 17px; margin: 18px 0; }
+.score {
+  width: 82px; height: 82px; flex: 0 0 82px;
+  display: grid; place-items: center;
+  border: 5px solid var(--orange);
+  border-radius: 50%; font-size: 24px; font-weight: 850;
+}
+.meter { height: 7px; background: #30394d; border-radius: 9px; overflow: hidden; margin-top: 9px; }
+.meter div { height: 100%; background: var(--orange); transition: width .3s; }
+.issue {
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+}
+.issue-top { display: flex; align-items: flex-start; gap: 9px; }
+.issue-top > div:last-child { flex: 1; }
+.priority {
+  font-size: 10px; font-weight: 850; text-transform: uppercase;
+  padding: 3px 7px; border-radius: 6px;
+  white-space: nowrap;
+}
+.high { background: #49272d; color: #ffb0b0; }
+.medium { background: #473621; color: #ffd08e; }
+.low { background: #1c4037; color: #8cf0c7; }
+.issue p { font-size: 13px; margin: 6px 0; }
+.fix {
+  margin-top: 8px; padding: 11px;
+  border-radius: 9px; background: #111622;
+  border: 1px solid var(--line); color: #e5eaf6;
+  font-size: 13px; white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.issue button { margin-top: 8px; padding: 7px 10px; font-size: 12px; }
+.result-title { overflow-wrap: anywhere; }
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin: 15px 0; }
+.stat { background: var(--panel2); border-radius: 10px; padding: 12px; }
+.stat strong { display: block; font-size: 22px; }
+.stat span { color: var(--muted); font-size: 11px; }
+.saved { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 16px; }
+.saved-item { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.saved-item button { padding: 5px 8px; }
+.notice { font-size: 12px; color: var(--muted); margin-top: 18px; }
+footer { border-top: 1px solid var(--line); padding: 22px 5%; text-align: center; color: var(--muted); font-size: 12px; }
+@media (max-width: 720px) {
+  header { padding: 15px 4%; }
+  main { margin-top: 26px; }
+  .layout { grid-template-columns: 1fr; }
+  .panel { padding: 17px; }
+  .empty { min-height: 200px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">🔎 Cart <span>Detective</span></div>
+  <div class="tag">BETA · PRODUCT AUDITOR</div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="eyebrow">Your store's investigation starts here</div>
+    <h1>Find the friction.<br>Fix the page.</h1>
+    <p>Check your product page for missing information and unclear messaging. Get a prioritised checklist of improvements you can make.</p>
+  </section>
+
+  <div class="layout">
+    <section class="panel">
+      <h2>Investigate a product</h2>
+      <p class="sub">Enter the details below. This first version checks the information you provide; it does not crawl the URL.</p>
+
+      <form id="auditForm">
+        <label for="product">Product name *</label>
+        <input id="product" required maxlength="120" placeholder="e.g. Strawberry night light">
+
+        <label for="url">Product page URL (optional)</label>
+        <input id="url" type="url" placeholder="https://yourstore.com/products/item">
+
+        <label for="price">Price (optional)</label>
+        <input id="price" placeholder="e.g. $24.95">
+
+        <label for="description">Product description *</label>
+        <textarea id="description" required maxlength="5000" placeholder="Paste the current product description..."></textarea>
+
+        <label for="benefits">Main customer benefits</label>
+        <textarea id="benefits" maxlength="2000" placeholder="What does it do? Who is it for? Why is it useful?"></textarea>
+
+        <label for="shipping">Shipping information</label>
+        <select id="shipping">
+          <option value="">Not sure / not provided</option>
+          <option value="clear">Costs and delivery times are clear</option>
+          <option value="partial">Some shipping details are shown</option>
+        </select>
+
+        <label for="returns">Returns policy</label>
+        <select id="returns">
+          <option value="">Not sure / not provided</option>
+          <option value="clear">Easy to find and understand</option>
+          <option value="partial">Mentioned, but unclear</option>
+        </select>
+
+        <label for="reviews">Customer reviews</label>
+        <select id="reviews">
+          <option value="">No reviews / not sure</option>
+          <option value="yes">Genuine reviews are displayed</option>
+        </select>
+
+        <label for="images">Product images</label>
+        <select id="images">
+          <option value="">Not assessed</option>
+          <option value="good">Clear images showing different angles or use</option>
+          <option value="weak">Only one image or images lack context</option>
+        </select>
+
+        <label for="audience">Target customer (optional)</label>
+        <input id="audience" maxlength="250" placeholder="e.g. People decorating a bedroom">
+
+        <button class="primary full" type="submit">Run my audit →</button>
+      </form>
+      <p class="notice">Your form data stays in this browser in this prototype. Don't enter customer personal information.</p>
+    </section>
+
+    <section class="panel" aria-live="polite">
+      <div id="emptyState" class="empty">
+        <div class="emoji">🕵️</div>
+        <h2>Your case file is empty</h2>
+        <p>Fill in the form and run your first audit to reveal possible issues and practical fixes.</p>
+      </div>
+
+      <div id="results" class="hidden">
+        <div class="eyebrow">Investigation report</div>
+        <h2 class="result-title" id="resultName"></h2>
+        <p class="sub" id="resultUrl"></p>
+        <div class="score-row">
+          <div class="score" id="score">--</div>
+          <div>
+            <h3 id="scoreTitle">Audit score</h3>
+            <p class="sub" id="scoreText"></p>
+            <div class="meter"><div id="meterFill" style="width:0"></div></div>
+          </div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat"><strong id="highCount">0</strong><span>High priority</span></div>
+          <div class="stat"><strong id="medCount">0</strong><span>Medium priority</span></div>
+          <div class="stat"><strong id="lowCount">0</strong><span>Low priority</span></div>
+        </div>
+
+        <h3>Recommended fixes</h3>
+        <p class="sub">Start at the top. Scores are heuristic, not predictions of sales or conversion rates.</p>
+        <div id="issues"></div>
+
+        <div class="actions">
+          <button class="secondary" id="copyReport" type="button">Copy report</button>
+          <button class="secondary" id="downloadReport" type="button">Download .txt</button>
+          <button class="primary" id="saveReport" type="button">Save report</button>
+        </div>
+      </div>
+
+      <div class="saved">
+        <h3>Saved case files</h3>
+        <p class="sub">Saved on this device only.</p>
+        <div id="savedList"><p class="sub">No saved reports yet.</p></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>Cart Detective · Early prototype · Suggestions are checks to investigate, not guarantees of improved sales.</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+let currentReport = null;
+
+function text(id) {
+  return $(id).value.trim();
+}
+
+function audit() {
+  const name = text("product");
+  const description = text("description");
+  const benefits = text("benefits");
+  const shipping = text("shipping");
+  const returns = text("returns");
+  const reviews = text("reviews");
+  const images = text("images");
+  const audience = text("audience");
+  const price = text("price");
+  const url = text("url");
+  const issues = [];
+
+  function add(priority, title, reason, fix) {
+    issues.push({priority, title, reason, fix});
+  }
+
+  if (description.length < 100) {
+    add("high", "Expand the product description",
+      "The description is very short, so shoppers may not have enough information to decide whether the product suits them.",
+      "Explain what the product is, its key features, how it is used, and what is included. Keep every claim accurate.");
+  }
+
+  if (!benefits || benefits.length < 25) {
+    add("high", "Make customer benefits clearer",
+      "The benefits field is missing or too brief. Features alone may not explain why someone would want the product.",
+      "Add 2–4 specific benefits. Explain how the product helps the intended customer without making unsupported promises.");
+  }
+
+  if (!shipping || shipping === "partial") {
+    add("high", "Clarify shipping costs and delivery times",
+      "Shipping uncertainty can create surprises late in checkout.",
+      "Clearly state shipping prices, estimated delivery windows, available shipping options and where you deliver. Make sure these details match checkout.");
+  }
+
+  if (!returns || returns === "partial") {
+    add("medium", "Make the returns policy easy to find",
+      "Shoppers may hesitate if they cannot understand what happens when an item is unsuitable or arrives damaged.",
+      "Link to a plain-language returns policy. Explain eligibility, time limits, exclusions and the steps to request a return.");
+  }
+
+  if (reviews !== "yes") {
+    add("medium", "Review your trust signals",
+      "The form does not indicate that genuine customer reviews are displayed.",
+      "If you have genuine reviews, show them clearly. If you don't, use accurate product photos, contact details and transparent policies instead. Never invent reviews.");
+  }
+
+  if (images !== "good") {
+    add("medium", "Check the product images",
+      "The images have not been confirmed as sufficient for a shopper to understand the product.",
+      "Use clear, accurate photos from useful angles. Where relevant, show scale, important details and the product in use.");
+  }
+
+  const lower = description.toLowerCase();
+  const vagueWords = ["amazing", "best ever", "incredible", "perfect"];
+  if (vagueWords.some(word => lower.includes(word))) {
+    add("low", "Replace vague claims with specifics",
+      "Broad promotional words may not explain what makes the product useful or different.",
+      "Replace generic claims with verifiable details such as materials, dimensions, included items or practical uses.");
+  }
+
+  if (!audience) {
+    add("low", "Define the intended customer",
+      "A clear target audience can help make the product copy more relevant.",
+      "Write one sentence describing who the product is for and the need it addresses. Avoid excluding other suitable customers unnecessarily.");
+  }
+
+  if (!price) {
+    add("low", "Check price clarity",
+      "A price was not entered into this audit.",
+      "Make the product price and currency easy to identify. Disclose additional mandatory charges before checkout wherever required.");
+  }
+
+  if (!url) {
+    add("low", "Record the product page URL",
+      "A URL makes it easier to locate the page being audited later.",
+      "Add the public product page URL to the form so your saved report can identify the page.");
+  }
+
+  const weights = {high: 20, medium: 10, low: 5};
+  const deductions = issues.reduce((sum, issue) => sum + weights[issue.priority], 0);
+  const score = Math.max(0, 100 - deductions);
+
+  return {
+    name, url, price, description, benefits, audience,
+    score, issues,
+    createdAt: new Date().toISOString()
+  };
+}
+
+function reportText(report) {
+  const lines = [
+    "CART DETECTIVE — AUDIT REPORT",
+    "Product: " + report.name,
+    "URL: " + (report.url || "Not supplied"),
+    "Price: " + (report.price || "Not supplied"),
+    "Audit score: " + report.score + "/100 (heuristic)",
+    "",
+    "RECOMMENDED FIXES",
+    ""
+  ];
+  report.issues.forEach((issue, i) => {
+    lines.push((i + 1) + ". [" + issue.priority.toUpperCase() + "] " + issue.title);
+    lines.push("Why: " + issue.reason);
+    lines.push("Suggested fix: " + issue.fix);
+    lines.push("");
+  });
+  lines.push("This automated checklist does not measure actual sales or guarantee improved conversion.");
+  return lines.join("\n");
+}
+
+function renderReport(report) {
+  currentReport = report;
+  $("emptyState").classList.add("hidden");
+  $("results").classList.remove("hidden");
+  $("resultName").textContent = report.name;
+  $("resultUrl").textContent = report.url || "No product URL supplied";
+  $("score").textContent = report.score;
+  $("meterFill").style.width = report.score + "%";
+  $("scoreTitle").textContent =
+    report.score >= 80 ? "Strong checklist result" :
+    report.score >= 55 ? "Some areas to investigate" : "Several issues to review";
+  $("scoreText").textContent =
+    "Based on the fields you entered — not a prediction of store performance.";
+  $("highCount").textContent = report.issues.filter(x => x.priority === "high").length;
+  $("medCount").textContent = report.issues.filter(x => x.priority === "medium").length;
+  $("lowCount").textContent = report.issues.filter(x => x.priority === "low").length;
+
+  const container = $("issues");
+  container.replaceChildren();
+
+  if (report.issues.length === 0) {
+    const p = document.createElement("p");
+    p.textContent = "No issues were flagged by these basic rules. This does not mean the page is perfect; consider testing it with real shoppers.";
+    container.appendChild(p);
+  }
+
+  report.issues.forEach((issue, index) => {
+    const article = document.createElement("article");
+    article.className = "issue";
+
+    const top = document.createElement("div");
+    top.className = "issue-top";
+    const badge = document.createElement("span");
+    badge.className = "priority " + issue.priority;
+    badge.textContent = issue.priority;
+    const content = document.createElement("div");
+    const heading = document.createElement("h3");
+    heading.textContent = (index + 1) + ". " + issue.title;
+    const reason = document.createElement("p");
+    reason.textContent = issue.reason;
+    const fix = document.createElement("div");
+    fix.className = "fix";
+    fix.textContent = issue.fix;
+    const copy = document.createElement("button");
+    copy.className = "secondary";
+    copy.type = "button";
+    copy.textContent = "Copy suggested fix";
+    copy.addEventListener("click", async () => {
+      await copyText(issue.fix, copy);
+    });
+
+    content.append(heading, reason, fix, copy);
+    top.append(badge, content);
+    article.appendChild(top);
+    container.appendChild(article);
+  });
+}
+
+async function copyText(value, button) {
+  try {
+    await navigator.clipboard.writeText(value);
+    button.textContent = "Copied!";
+    setTimeout(() => button.textContent = "Copy suggested fix", 1200);
+  } catch {
+    window.prompt("Copy this text:", value);
+  }
+}
+
+$("auditForm").addEventListener("submit", event => {
+  event.preventDefault();
+  renderReport(audit());
+  $("results").scrollIntoView({behavior: "smooth", block: "start"});
+});
+
+$("copyReport").addEventListener("click", async () => {
+  if (currentReport) await copyText(reportText(currentReport), $("copyReport"));
+});
+
+$("downloadReport").addEventListener("click", () => {
+  if (!currentReport) return;
+  const blob = new Blob([reportText(currentReport)], {type: "text/plain;charset=utf-8"});
+  const objectURL = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = objectURL;
+  a.download = "cart-detective-report.txt";
+  a.click();
+  URL.revokeObjectURL(objectURL);
+});
+
+function getSaved() {
+  try {
+    return JSON.parse(localStorage.getItem("cartDetectiveReports") || "[]");
+  } catch {
+    return [];
+  }
+}
+
+$("saveReport").addEventListener("click", () => {
+  if (!currentReport) return;
+  const saved = getSaved();
+  saved.unshift(currentReport);
+  try {
+    localStorage.setItem("cartDetectiveReports", JSON.stringify(saved.slice(0, 20)));
+    renderSaved();
+    $("saveReport").textContent = "Saved!";
+    setTimeout(() => $("saveReport").textContent = "Save report", 1200);
+  } catch {
+    alert("This browser could not save the report. Try downloading it instead.");
+  }
+});
+
+function renderSaved() {
+  const list = $("savedList");
+  list.replaceChildren();
+  const saved = getSaved();
+
+  if (!saved.length) {
+    const p = document.createElement("p");
+    p.className = "sub";
+    p.textContent = "No saved reports yet.";
+    list.appendChild(p);
+    return;
+  }
+
+  saved.forEach((report, index) => {
+    const row = document.createElement("div");
+    row.className = "saved-item";
+    const name = document.createElement("span");
+    name.textContent = report.name + " · " + report.score + "/100";
+    const buttons = document.createElement("div");
+    const open = document.createElement("button");
+    open.className = "secondary";
+    open.textContent = "Open";
+    open.addEventListener("click", () => {
+      renderReport(report);
+      $("results").scrollIntoView({behavior: "smooth"});
+    });
+    const remove = document.createElement("button");
+    remove.className = "secondary";
+    remove.textContent = "Delete";
+    remove.addEventListener("click", () => {
+      const latest = getSaved();
+      latest.splice(index, 1);
+      localStorage.setItem("cartDetectiveReports", JSON.stringify(latest));
+      renderSaved();
+    });
+    buttons.append(open, remove);
+    row.append(name, buttons);
+    list.appendChild(row);
+  });
+}
+
+renderSaved();
+</script>
+</body>
+</html>
